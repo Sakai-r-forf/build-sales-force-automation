@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    container_name: constr_scraper_app
+    ports:
+      - "9020:7900"
+    environment:
+      - TZ=Asia/Tokyo
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+    command: >
+      gunicorn -b 0.0.0.0:7900 app:app --workers 2 --threads 4 --timeout 120
