@@ -1,3 +1,23 @@
-*{
-    margin: 0;
+* {
+  margin: 0;
+}
+
+.login-container {
+  height: 758px;
+  /* background-image: url("image/login.png"); */
+  background-image: url("image/login.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+}
+
+.login-content {
+  max-width: 564px;
+  height: 680px;
+  background-color: rgba(242, 242, 242, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 0 20px 30px rgba(0, 0, 0, 0.25);
+
+  margin-inline: auto;
+  padding: 219px 0;
 }
