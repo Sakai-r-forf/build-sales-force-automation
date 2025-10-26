@@ -3,3 +3,7 @@ requests==2.32.3
 beautifulsoup4==4.12.3
 lxml==5.3.0
 gunicorn==21.2.0
+Flask-SQLAlchemy
+Werkzeug>=3.0
+Flask-Login>=0.6
+gunicorn>=21.2
