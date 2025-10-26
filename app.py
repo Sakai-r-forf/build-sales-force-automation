@@ -1,6 +1,6 @@
 from flask import Flask, request, send_file, render_template_string
 from scraper import crawl_and_export, get_stats
-import os, json
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -81,6 +81,10 @@ def crawl():
     resp.headers["X-Requests-By-Domain"] = json.dumps(stats.get("by_domain", {}), ensure_ascii=False)
     resp.headers["X-Crawl-Duration-Seconds"] = str(stats.get("duration_seconds", ""))
     return resp
+
+@app.get("/login")
+def login():
+    return render_template("auth/login.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=7700, debug=True)
