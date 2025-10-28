@@ -17,13 +17,25 @@
         <div class="login-content">
           <form action="/login" method="post">
             <div class="form-group">
-              <label for="email">メールアドレス</label>
-              <input type="email" id="email" name="email" required />
+              <label for="email" class="sr-only">メールアドレス</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="メールアドレス"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label for="password">パスワード</label>
-              <input type="password" id="password" name="password" required />
+              <label for="password" class="sr-only">パスワード</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="パスワード"
+                required
+              />
             </div>
 
             <button type="submit">ログイン</button>
