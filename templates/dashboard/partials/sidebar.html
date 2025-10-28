@@ -1,0 +1,11 @@
+<nav class="sidebar">
+    <ul>
+        <li><a href="{{ url_for('scraping.index') }}">スクレイピング</a></li>
+        <li><a href="{{ url_for('companies.index') }}">企業情報一覧</a></li>
+        <li><a href="{{ url_for('graphs.index') }}">グラフデータ</a></li>
+        <!--ここに入れ子のデータ抽出件数、連絡件数、データ保存日が入る：ffkt-->
+        <li><a href="{{ url_for('faq.index') }}">FAQ（使い方）</a></li>
+        <li><a href="{{ url_for('auth.logout') }}">ログアウト</a></li>
+    </ul>
+</nav>
+<!--クローズボタン等は別途作成：ffkt-->

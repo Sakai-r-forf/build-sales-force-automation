@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}管理画面{% endblock %}</title>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        {% include "dashboard/partials/sidebar.html" %}
+        <main class="content">
+        {% block content %}{% endblock %}
+        </main>
+    </body>
+</html>

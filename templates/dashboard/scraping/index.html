@@ -1,0 +1,29 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}建設業 企業情報スクレイパー{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/scraping/index.css') }}">
+{% endblock %}
+{% block content %}
+
+  <h1>建設業 企業情報スクイパー（最大100件）</h1>
+  <form method="POST" action="{{ url_for('scraping.crawl') }}">
+    <label>スタートURL（企業一覧や加盟団体のリスト等）</label>
+    <input required name="seed_url" placeholder="https://example.com/constructors/list" />
+
+    <label>クロール対象ドメイン（省略可：seedと同一ドメインのみ）</label>
+    <input name="allowed_domain" placeholder="example.com" />
+
+    <label>最大件数（既定：100）</label>
+    <input name="limit" type="number" min="1" max="500" value="100" />
+
+    <label>最大取得ページ数（既定：100 / 誤爆防止）</label>
+    <input name="max_pages" type="number" min="1" max="2000" value="500" />
+
+    <label>日本語のキーワード（改行区切り、見つけやすくするため）</label>
+    <textarea name="jp_keywords" rows="4" placeholder="株式会社・有限会社・建設・工務店・お問い合わせ・会社概要"></textarea>
+
+    <button type="submit">CSVを生成</button>
+    <p class="hint">※ robots.txt を尊重し、1〜1.5秒の遅延を入れます。</p>
+  </form>
+{% endblock %}
