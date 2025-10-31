@@ -5,7 +5,7 @@
 .login-container {
   height: 100vh; /* 758 × 0.687 */
   /* background-image: url("image/login.png"); */
-  background-image: url("image/login.svg");
+  background-image: url("/static/auth/image/login.svg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
@@ -17,13 +17,18 @@
 
 .login-content {
   min-width: 387px; /* 564 × 0.687 */
-  height: 467px; /* 680 × 0.687 */
-  background-color: rgba(242, 242, 242, 0.2);
+  min-height: 467px; /* 680 × 0.687 */
+  max-height: 467px; /* 680 × 0.687 */
+  background-color: rgb(255 255 255 / 25%);
   border-radius: 10px;
-  box-shadow: 0 0 14px 21px rgba(0, 0, 0, 0.25); /* 20×0.687, 30×0.687 */
-  margin: 150px auto; /*  */
-  padding: 148px 52px; /* 219 × 0.687 */
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+  /* backdrop-filter: blur(10px); */
+  /* padding: 148px 52px; */ /* 219 × 0.687 */
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 148px 52px;
 }
 
 .form-group {
@@ -39,12 +44,24 @@
 
 .form-group input {
   height: 55px; /*  */
-  padding: 17px 0 17px 13px; /*  */
+  /* padding: 17px 0 17px 13px; */ /*  */
   font-size: 24px;
   font-weight: bold;
-  color: #b3b3b3;
+  color: rgb(0, 0, 0, 0.3);
   background-color: #ffffff;
   border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #1e8697;
+}
+
+::placeholder {
+  font-size: 16px;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  position: relative;
+  bottom: 2px;
 }
 
 button[type="submit"] {
