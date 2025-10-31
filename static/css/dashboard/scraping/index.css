@@ -1,9 +1,22 @@
 /*---以下は技術検証の際のCSSを仮で挿入しています。---*/
-*{
-    margin: 100px;
+form {
+  display: grid;
+  gap: 12px;
+  max-width: 680px;
 }
-body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; padding: 24px; }
-form { display: grid; gap: 12px; max-width: 680px; }
-input, button, textarea { padding: 10px; font-size: 16px; }
-label { font-weight: 600; }
-.hint { color: #666; font-size: 14px; }
+
+input,
+button,
+textarea {
+  padding: 10px;
+  font-size: 16px;
+}
+
+label {
+  font-weight: 600;
+}
+
+.hint {
+  color: #666;
+  font-size: 14px;
+}

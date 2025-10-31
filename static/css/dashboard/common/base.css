@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.dashboard_flex_content {
+  display: flex;
+}
+.dashboard_flex_left {
+  width: 30vw;
+}
+.dashboard_flex_right {
+  background-color: #f7f7f7;
+  border: rgba(30, 134, 151, 0.7);
+  box-shadow: #4cc1e0;
+  width: 70vw;
+}
