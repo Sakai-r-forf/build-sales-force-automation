@@ -1,22 +1,96 @@
-/*---以下は技術検証の際のCSSを仮で挿入しています。---*/
+.dashboard_flex_right {
+  width: auto !important;
+}
+
+.scraping-container {
+  margin: 60px auto;
+  margin-inline: auto;
+}
+
+.scraping-wrapper {
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  border: 1px solid rgba(30, 134, 151, 0.7);
+  padding: 48px 53px;
+  box-shadow: 14px 14px 0 0 #4cc1e0, inset 0 0 0 1px rgba(30, 134, 151, 0.7);
+}
+
 form {
   display: grid;
-  gap: 12px;
-  max-width: 680px;
+  gap: 10px;
 }
 
 input,
-button,
 textarea {
-  padding: 10px;
-  font-size: 16px;
+  width: 694px;
+  border: 1px solid rgba(30, 134, 151, 0.7);
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 19px 0 19px 18px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.faq-link {
+  color: #1d1d1d;
+  font-size: 13px;
+}
+
+.faq-link a {
+  text-decoration: none;
+  color: #0090d8;
 }
 
 label {
-  font-weight: 600;
+  width: 217px;
+  margin: 50px 0 0 0;
+  padding: 6px 0 6px 18px;
+  background: #31b7cd;
+  color: #f7f7f7;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+
+.flex {
+  display: flex;
+  gap: 44px;
+  margin: 50px 0 0 0;
+}
+
+.flex label {
+  display: block;
+  width: 217px;
+  margin: 50px 0 0 0;
+  padding: 6px 0 6px 18px;
+  flex-shrink: 0;
+  background: #31b7cd;
+  color: #f7f7f7;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+
+.flex input {
+  width: 100%;
+  margin: 10px 0;
+}
+
+button {
+  width: 358px;
+  margin: 50px auto 0;
+  padding: 25px 0;
+  border-radius: 80px;
+  border: none;
+  background: #d49218;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
 }
 
 .hint {
-  color: #666;
-  font-size: 14px;
+  text-align: center;
+  color: #6b7b86;
+  font-size: 12px;
 }
