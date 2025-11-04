@@ -12,6 +12,12 @@
   flex-direction: column;
 }
 
+.profile-info-area .flex-justify-center,
+.sidebar-nav-top .flex-justify-center,
+.sidebar-nav-bottom .flex-justify-center {
+  gap: 12.5px;
+}
+
 .profile-info-area {
   border-bottom: 1px solid #ffffff;
 }
@@ -23,12 +29,6 @@
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
-}
-
-.profile-info-area .flex-justify-center,
-.sidebar-nav-top .flex-justify-center,
-.sidebar-nav-bottom .flex-justify-center {
-  gap: 12.5px;
 }
 
 .profile-image {
@@ -47,23 +47,15 @@
 }
 
 .profile-company,
-.profile-user,
-.sidebar-nav-top a,
-.sidebar-nav-bottom a {
+.profile-user {
   font-weight: bold;
   margin: 0;
   color: #ffffff;
-}
-
-.profile-company,
-.profile-user,
-.flex-justify-center a {
   line-height: 22px;
   width: 150px;
 }
 
-.profile-company,
-.flex-justify-center a {
+.profile-company {
   font-size: 20px;
   letter-spacing: 0.2px;
 }
@@ -84,14 +76,14 @@
   width: 100%;
 }
 
-.sidebar-nav-top .flex-justify-center,
-.sidebar-nav-bottom .flex-justify-center {
-  align-items: center;
-}
-
 .sidebar-nav-top ul,
 .sidebar-nav-bottom ul {
   padding: 0;
+}
+
+.sidebar-nav-top .flex-justify-center,
+.sidebar-nav-bottom .flex-justify-center {
+  align-items: center;
 }
 
 .sidebar-nav-top img,
@@ -104,14 +96,41 @@
 
 .sidebar-nav-top a,
 .sidebar-nav-bottom a {
+  font-weight: bold;
+  margin: 0;
+  color: #ffffff;
   text-decoration: none;
   text-align: left;
+}
+
+.flex-justify-center a {
+  line-height: 22px;
+  width: 150px;
+  font-size: 20px;
+  letter-spacing: 0.2px;
 }
 
 .white-border {
   width: 100%;
   height: 1px;
   background-color: #ffffff;
+}
+
+.graphs-sub {
+  list-style: none;
+  padding: 0 0 0 20px;
+  margin: 15px 0 0 50px;
+  position: relative;
+}
+
+.graphs-sub::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  background: #ffffff;
+  height: calc(100% - 47px);
 }
 
 .graphs-sub-extracted,
@@ -130,13 +149,6 @@
   padding: 10px 0 35px 0;
 }
 
-.graphs-sub {
-  list-style: none;
-  padding: 0 0 0 20px;
-  margin: 15px 0 0 50px;
-  position: relative;
-}
-
 .item-line {
   width: 39px;
   height: 1px;
@@ -144,22 +156,12 @@
   margin-left: 0px;
 }
 
-.graphs-sub::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1px;
-  background: #ffffff;
-  height: calc(100% - 47px);
-}
-
 .graphs-sub a {
   color: #ffffff;
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.2px;
   white-space: nowrap;
 }
 
@@ -183,6 +185,6 @@
   font-size: 16px;
   font-weight: bold;
   color: #d49218;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.2px;
   white-space: nowrap;
 }

@@ -1,29 +1,99 @@
-{% extends "dashboard/base.html" %}
+{% extends "dashboard/base.html" %} {% block title %}建設業
+企業情報スクレイパー{% endblock %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/dashboard/scraping/index.css') }}"
+/>
+{% endblock %} {% block content %}
 
-{% block title %}建設業 企業情報スクレイパー{% endblock %}
-{% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/scraping/index.css') }}">
-{% endblock %}
-{% block content %}
+<div class="scraping-container">
+  <div class="scraping-wrapper">
+    <div class="scraping-content">
+      <form method="POST" action="{{ url_for('scraping.crawl') }}">
+        <label>企業掲載サイトのURL</label>
+        <input
+          required
+          name="seed_url"
+          placeholder="https://example.com/member"
+        />
+        <!-- TODO FAQリンク挿入 -->
+        <p class="faq-link">
+          企業一覧が掲載されているサイトのURLを入力してください<a
+            href="{{ url_for('scraping.index') }}"
+            >（詳細はこちら）</a
+          >
+        </p>
 
-  <h1>建設業 企業情報スクイパー（最大100件）</h1>
-  <form method="POST" action="{{ url_for('scraping.crawl') }}">
-    <label>スタートURL（企業一覧や加盟団体のリスト等）</label>
-    <input required name="seed_url" placeholder="https://example.com/constructors/list" />
+        <label>抽出範囲の制限（空欄可）</label>
+        <input name="allowed_domain" placeholder="example.com" />
+        <!-- TODO FAQリンク挿入 -->
+        <p class="faq-link">
+          空欄の場合、上記サイト内のみから情報を抽出します<a
+            href="{{ url_for('scraping.index') }}"
+            >（詳細はこちら）</a
+          >
+        </p>
 
-    <label>クロール対象ドメイン（省略可：seedと同一ドメインのみ）</label>
-    <input name="allowed_domain" placeholder="example.com" />
+        <div class="flex">
+          <div class="flex-2">
+            <label>最大取得企業数</label>
+            <input
+              name="limit"
+              type="number"
+              min="1"
+              max="500"
+              value="100"
+              placeholder="既定値：100"
+            />
+            <!-- TODO FAQリンク挿入 -->
+            <p class="faq-link">
+              サイトから抽出する企業数の上限を設定します<a
+                href="{{ url_for('scraping.index') }}"
+                >（詳細はこちら）</a
+              >
+            </p>
+          </div>
 
-    <label>最大件数（既定：100）</label>
-    <input name="limit" type="number" min="1" max="500" value="100" />
+          <div>
+            <!-- TODO: 誤爆防止や件数を増やすことによる注意事項を記載 -->
+            <label>最大取得ページ数</label>
+            <input
+              name="max_pages"
+              type="number"
+              min="1"
+              max="2000"
+              value="100"
+              placeholder="既定値：100"
+            />
+            <!-- TODO FAQリンク挿入 -->
+            <p class="faq-link">
+              サーバー負荷軽減のための制限数です<a
+                href="{{ url_for('scraping.index') }}"
+                >（詳細はこちら）</a
+              >
+            </p>
+          </div>
+        </div>
 
-    <label>最大取得ページ数（既定：100 / 誤爆防止）</label>
-    <input name="max_pages" type="number" min="1" max="2000" value="500" />
+        <label>絞り込みキーワード</label>
+        <textarea
+          name="jp_keywords"
+          rows="4"
+          placeholder="株式会社・有限会社・建設・工務店・お問い合わせ・会社概要"
+        ></textarea>
+        <!-- TODO FAQリンク挿入 -->
+        <p class="faq-link">
+          企業名や業種に関連するキーワードを1ワード、1改行で入力してください<a
+            href="{{ url_for('scraping.index') }}"
+            >（詳細はこちら）</a
+          >
+        </p>
 
-    <label>日本語のキーワード（改行区切り、見つけやすくするため）</label>
-    <textarea name="jp_keywords" rows="4" placeholder="株式会社・有限会社・建設・工務店・お問い合わせ・会社概要"></textarea>
+        <button type="submit">CSVを生成</button>
+        <p class="hint">※ CSV生成の目安は5分前後です</p>
+      </form>
+    </div>
+  </div>
+</div>
 
-    <button type="submit">CSVを生成</button>
-    <p class="hint">※ robots.txt を尊重し、1〜1.5秒の遅延を入れます。</p>
-  </form>
 {% endblock %}
