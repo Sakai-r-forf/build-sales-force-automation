@@ -61,8 +61,7 @@ label {
 
 .flex {
   display: flex;
-  gap: 44px;
-  margin: 50px 0 0 0;
+  gap: 43px;
 }
 
 .flex label {
@@ -82,7 +81,7 @@ label {
 }
 
 .flex input {
-  width: 100%;
+  width: 325px;
   margin: 10px 0;
 }
 
@@ -92,6 +91,8 @@ button {
   margin: 50px auto 0;
   /* padding: 25px 0; */
   border-radius: 80px;
+  padding: 25px 0;
+  border-radius: 10px;
   border: none;
   background: #d49218;
   color: #ffffff;
