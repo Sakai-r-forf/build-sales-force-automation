@@ -20,10 +20,10 @@
 }
 
 .search-content p {
+  margin: 0 112px;
   font-size: 16px;
   font-weight: bold;
   color: #d49218;
-  margin: 0 112px;
 }
 
 .search-divider {
@@ -45,9 +45,8 @@
 
 .company-list-content {
   border-radius: 20px;
-  overflow: hidden;
   border-spacing: 0;
-  /* border: 1px solid rgba(30, 134, 151, 0.8); */
+  overflow: hidden;
 }
 
 .companies-table {
@@ -60,13 +59,12 @@
 
 .companies-table thead th {
   padding: 13px 0;
+  border: none;
+  border-left: 1px solid rgba(30, 134, 151, 0.8);
   font-size: 16px;
   font-weight: bold;
-  text-align: center;
   color: #ffffff;
-  border: none;
-  /* border-bottom: 1px solid rgba(30, 134, 151, 0.8); */
-  border-left: 1px solid rgba(30, 134, 151, 0.8);
+  text-align: center;
 }
 
 .companies-table thead th:first-child {
@@ -88,12 +86,12 @@
 
 .companies-table tbody td {
   padding: 13px 22.5px;
-  font-size: 14px;
-  text-align: center;
-  color: #1d1d1d;
-  line-height: 34px;
   border-bottom: 1px solid rgba(30, 134, 151, 0.8);
   border-left: 1px solid rgba(30, 134, 151, 0.8);
+  font-size: 14px;
+  line-height: 34px;
+  color: #1d1d1d;
+  text-align: center;
 }
 
 .companies-table tbody td:last-child {
@@ -121,8 +119,8 @@
 .pager .search-list-pagination,
 .pager .pager-btn {
   padding: 8px 16px;
-  color: #1e8697;
   text-decoration: none;
+  color: #1e8697;
 }
 
 .pager .search-list-pagination {
