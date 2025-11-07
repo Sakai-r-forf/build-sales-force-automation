@@ -1,5 +1,61 @@
 {% extends "dashboard/base.html" %}
 {% block title %}FAQ（使い方）{% endblock %}
+{% block head %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/dashboard/faq/index.css') }}"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+
+{% endblock %}
 {% block content %}
-    <p>FAQ（使い方）</p>
+<div class="faq_head_container">
+    <div class="faq_head_wrapper">
+        <div class="faq_head_content">
+            <h2>FAQ（使い方）</h2>
+        </div>
+    </div>
+</div>
+<div class="faq_container">
+    <div class="faq_wrapper">
+        <div class="faq_list">
+            <div class="faq_card">
+                <div class="faq_question_box">
+                <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                <h3 class="faq_question_text">メール何件送付？</h3>
+                </div>
+                <div class="faq_answer_box">
+                <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                <p class="faq_answer_text">現状は1件ですが、これから1日あたり50件送付できるように実装予定です。</p>
+                </div>
+            </div>
+        
+            <div class="faq_card">
+                <div class="faq_question_box">
+                <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                <h3 class="faq_question_text">メール何件送付？</h3>
+                </div>
+                <div class="faq_answer_box">
+                <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                <p class="faq_answer_text">現状は1件ですが、これから1日あたり50件送付できるように実装予定です。</p>
+                </div>
+            </div>
+        
+            <div class="faq_card">
+                <div class="faq_question_box">
+                <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                <h3 class="faq_question_text">メール何件送付？</h3>
+                </div>
+                <div class="faq_answer_box">
+                <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                <p class="faq_answer_text">現状は1件ですが、これから1日あたり50件送付できるように実装予定です。</p>
+                </div>
+            </div>
+        
+            </div>
+        </div>    
+    </div>
 {% endblock %}

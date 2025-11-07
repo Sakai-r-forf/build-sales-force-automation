@@ -1,0 +1,13 @@
+*{
+    margin: 0;
+}
+.dashboard_flex_content{
+    display: flex;
+}
+.dashboard_flex_left{
+    background-color: antiquewhite;
+}
+.dashboard_flex_right{
+    background-color: rgb(255, 218, 170);
+    width: 70vw;
+}

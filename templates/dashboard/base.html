@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/dashboard/common/base.css') }}"
-    />
-    <title>{% block title %}管理画面{% endblock %}</title>
-    {% block head %}{% endblock %}
-  </head>
-
-  <body>
-    <div class="dashboard_flex_container">
-      <div class="dashboard_flex_wrapper">
-        <div class="dashboard_flex_content">
-          <div class="dashboard_flex_left">
-            <div class="dashboard_flex_left_area">
-              {% include "dashboard/partials/sidebar.html" %}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+        rel="stylesheet"
+        />
+        <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard/common/base.css') }}"
+        />
+        <title>{% block title %}管理画面{% endblock %}</title>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div class="dashboard_flex_container">
+            <div class="dashboard_flex_wrapper">
+                <div class="dashboard_flex_content">
+                <div class="dashboard_flex_left">
+                    <div class="dashboard_flex_left_area">
+                    {% include "dashboard/partials/sidebar.html" %}
+                    </div>
+                </div>
+                <div class="dashboard_flex_right">
+                    <main class="dashboard_flex_right_area">
+                    {% block content %}{% endblock %}
+                    </main>
+                </div>
+                </div>
             </div>
-          </div>
-          <div class="dashboard_flex_right">
-            <main class="dashboard_flex_right_area">
-              {% block content %}{% endblock %}
-            </main>
-          </div>
         </div>
-      </div>
-    </div>
-  </body>
+    </body>
 </html>
