@@ -1,7 +1,7 @@
+
 .dashboard_flex_right {
   width: auto !important;
 }
-
 .search-wrapper {
   display: flex;
   justify-content: end;
@@ -37,6 +37,10 @@
   margin: 0px 50px 0 0;
   width: 33px;
   height: 33px;
+}
+
+.companies-page{
+  width: 100%;
 }
 
 .company-list-container {
