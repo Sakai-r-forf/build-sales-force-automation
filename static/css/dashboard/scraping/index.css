@@ -93,6 +93,8 @@ button {
   border-radius: 80px;
   padding: 25px 0;
   border-radius: 10px;
+  /* padding: 25px 0; */
+  border-radius: 80px;
   border: none;
   background: #d49218;
   color: #ffffff;
