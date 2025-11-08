@@ -24,38 +24,225 @@
         <div class="faq_list">
             <div class="faq_card">
                 <div class="faq_question_box">
-                <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
-                <h3 class="faq_question_text">メール何件送付？</h3>
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">企業掲載サイトのURLはどこに入力すればよいですか？</h3>
                 </div>
                 <div class="faq_answer_box">
-                <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
-                <p class="faq_answer_text">現状は1件ですが、これから1日あたり50件送付できるように実装予定です。</p>
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">フォームの「企業掲載サイトのURL」欄に対象サイトのURLを入力してください。正しいURLでない場合はデータ抽出が正常に行えません。</p>
                 </div>
             </div>
-        
+
             <div class="faq_card">
                 <div class="faq_question_box">
-                <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
-                <h3 class="faq_question_text">メール何件送付？</h3>
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">URLは必ずHTTPSで入力する必要がありますか？</h3>
                 </div>
                 <div class="faq_answer_box">
-                <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
-                <p class="faq_answer_text">現状は1件ですが、これから1日あたり50件送付できるように実装予定です。</p>
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">推奨はHTTPSですが、HTTPでもアクセス可能な場合は入力可能です。ただし、HTTPSが使える場合はセキュリティの観点からHTTPSを使用してください。</p>
                 </div>
             </div>
-        
+
             <div class="faq_card">
                 <div class="faq_question_box">
-                <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
-                <h3 class="faq_question_text">メール何件送付？</h3>
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">入力したURLに企業一覧がない場合はどうなりますか？</h3>
                 </div>
                 <div class="faq_answer_box">
-                <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
-                <p class="faq_answer_text">現状は1件ですが、これから1日あたり50件送付できるように実装予定です。</p>
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">企業一覧ページでない場合、正常に情報が抽出されません。必ず企業一覧が掲載されているページのURLを入力してください。</p>
                 </div>
             </div>
-        
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">抽出範囲を空欄にした場合はどうなりますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">入力URLのページ内のみの情報が抽出対象となります。別のサイトの情報は取得されません。</p>
+                </div>
             </div>
-        </div>    
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">最大取得件数とは何ですか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">サイトから取得する企業情報の上限件数を設定する項目です。上限を超えた件数は取得されません。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">最大取得件数を500より大きく設定できますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">設定上限は500件です。500件以上は取得できないため、必要に応じて分割処理などで調整してください。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">最大取得ページ数とは何ですか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">サイトから取得するページ数の上限を設定します。サーバー負荷を軽減するため、必要以上のページ数は設定しないでください。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">最大取得ページ数を500より多く設定できますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">設定上限は500ページです。それ以上は取得できませんので、分割して取得する必要があります。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">絞り込みキーワードはどのように入力しますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">キーワードを1ワードごとに改行して入力してください。複数ワードを同じ行に入力すると正しく抽出されません。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">CSVの生成ボタンを押すとすぐにダウンロードできますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">処理には5分前後かかる場合があります。生成完了後にダウンロード可能です。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">CSV生成に失敗した場合はどうすれば良いですか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">URLや抽出条件を確認し、再度CSV生成ボタンを押してください。それでも失敗する場合は担当者に問い合わせてください。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">生成されるCSVにはどの情報が含まれますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">企業名、企業サイトURL、お問い合わせURL、保存日などの情報が含まれます。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">サイトによっては抽出できない場合がありますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">はい。一部サイトは情報取得を制限している場合があります。その場合は抽出できません。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">サーバー負荷を軽減するために注意すべきことはありますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">最大取得件数やページ数を必要以上に大きく設定しないようにしてください。大量設定はサーバー負荷の原因になります。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">取得件数やページ数を変更した場合、すぐ反映されますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">はい。設定値に応じて次回のCSV生成から反映されます。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">絞り込みキーワードを入力しなかった場合はどうなりますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">キーワードによる絞り込みは行われず、すべての企業情報が対象となります。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">入力ミスによりURLが不正な場合はどうなりますか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">正しく取得できず、CSV生成に失敗します。URLや入力内容を確認してください。</p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">絞り込みキーワードはどう使えば良いですか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">
+                        絞り込みキーワード欄には、企業名や業種に関連する単語を1ワードずつ改行して入力してください。
+                        例：<br>
+                        株式会社<br>
+                        建設<br>
+                        工務店<br>
+                        これにより指定したキーワードを含む企業情報のみ抽出されます。
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq_card">
+                <div class="faq_question_box">
+                    <div class="faq_icon_q"><i class="fa-solid fa-q"></i></div>
+                    <h3 class="faq_question_text">検索バーでの部分一致とは何ですか？</h3>
+                </div>
+                <div class="faq_answer_box">
+                    <div class="faq_icon_a"><i class="fa-solid fa-a"></i></div>
+                    <p class="faq_answer_text">
+                        検索バーに入力した文字列が、企業名に含まれているかどうかで絞り込みを行う機能です。
+                        たとえば「創伸」と入力すると、「株式会社創伸建設〇〇」や「創伸工務店」など、
+                        文字列を含む企業だけが表示されます。大文字小文字も区別せず、部分的に一致するもの全てが対象です。
+                    </p>
+                </div>
+            </div>            
+
+        </div>
     </div>
+</div>
 {% endblock %}

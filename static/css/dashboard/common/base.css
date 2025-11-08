@@ -6,7 +6,8 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-button,a:hover{
+button,a:hover,
+input:hover{
   cursor: pointer;
 }
 
