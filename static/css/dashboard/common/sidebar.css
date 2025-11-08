@@ -1,0 +1,474 @@
+* {
+    margin: 0;
+}
+
+.sidebar-container{
+    position: fixed;
+    top: -0.00001px;
+}
+.sidebar-content {
+    background: linear-gradient(to top, #20c1d3, #4dc1e1);
+    width: 263px;
+    /*
+    min-height: 978px;
+    max-height: 978px;
+    */
+    min-height: 100vh;
+    max-height: 100vh;
+    box-sizing: border-box;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-info-area .flex-justify-center,
+.sidebar-nav-top .flex-justify-center,
+.sidebar-nav-bottom .flex-justify-center {
+    gap: 12.5px;
+}
+
+.profile-info-area {
+  border-bottom: 1px solid #ffffff;
+}
+
+.flex-justify-center {
+  display: flex;
+  justify-content: center;
+  padding: 23px 0;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.profile-image {
+  width: 55px;
+  height: 55px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  height: 60px;
+}
+
+.profile-company,
+.profile-user {
+  font-weight: bold;
+  margin: 0;
+  color: #ffffff;
+  line-height: 22px;
+  width: 150px;
+}
+
+.profile-company {
+  font-size: 20px;
+  letter-spacing: 0.2px;
+}
+
+.profile-user {
+  font-size: 16px;
+}
+
+.sidebar-nav-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.sidebar-nav-top,
+.sidebar-nav-bottom {
+  width: 100%;
+}
+
+.sidebar-nav-top ul,
+.sidebar-nav-bottom ul {
+  padding: 0;
+}
+
+.sidebar-nav-top .flex-justify-center,
+.sidebar-nav-bottom .flex-justify-center {
+  align-items: center;
+}
+
+.sidebar-nav-top img,
+.sidebar-nav-bottom img {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.sidebar-nav-top a,
+.sidebar-nav-bottom a {
+  font-weight: bold;
+  margin: 0;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: left;
+}
+
+.flex-justify-center a {
+  line-height: 22px;
+  width: 150px;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+}
+
+.white-border {
+  width: 100%;
+  height: 1px;
+  background-color: #ffffff;
+}
+
+.graphs-sub {
+  list-style: none;
+  padding: 0 0 0 20px;
+  margin: 15px 0 0 50px;
+  position: relative;
+}
+
+.graphs-sub::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  background: #ffffff;
+  height: calc(100% - 47px);
+}
+
+.graphs-sub-extracted,
+.graphs-sub-contact {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  position: relative;
+}
+
+.graphs-sub-extracted {
+  padding: 30px 0 10px 0;
+}
+
+.graphs-sub-contact {
+  padding: 10px 0 35px 0;
+}
+
+.item-line {
+  width: 39px;
+  height: 1px;
+  background-color: #ffffff;
+  margin-left: 0px;
+}
+
+.graphs-sub a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.login-button-orange {
+  width: 215px;
+  background-color: #ffffff;
+  border-radius: 50px;
+  gap: 12.5px;
+  padding: 13px 0 13px 39px;
+  margin: 35px auto;
+}
+
+.login-button-orange img {
+  width: 35px;
+  height: 29px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.login-button-orange a {
+  font-size: 16px;
+  font-weight: bold;
+  color: #d49218;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+/*------------------------------------*/
+/* サイドバーオープンクローズ              */
+/*------------------------------------*/
+.sidebar-container {
+    position: fixed;
+    transition: all 0.4s ease;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    top: 112px;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 165px;
+    background-color: #D49218;
+    border-radius: 0 40px 40px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    z-index: 1000;
+    left: 263px;
+}
+
+.sidebar-container.closed .sidebar-toggle {
+    left: 100px;
+}
+
+.sidebar-toggle .toggle-arrow {
+    width: 27px;
+    height: 27px;
+    margin-bottom: 10px;
+    transition: transform 0.4s ease;
+}
+
+.sidebar-toggle .toggle-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 1px;
+    transition: transform 0.4s ease;
+}
+
+.sidebar-container.closed .sidebar-toggle {
+    right: -60px;
+}
+
+.sidebar-container.closed .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+.sidebar-container.closed .toggle-text span {
+    content: "OPEN";
+}
+
+/* ✅ 修正: aはそのまま、spanだけ非表示 */
+.sidebar-container.closed .sidebar-content a span {
+    display: none;
+}
+
+/* ✅ 以前のdisplay: none;削除済み */
+/* .sidebar-container.closed .sidebar-content a { display: none; } */
+
+.sidebar-container.closed .sidebar-content img {
+    margin: 0 auto;
+    width: 40px;
+    height: auto;
+    aspect-ratio: 1/1;
+}
+
+.sidebar-container.closed .sidebar-content {
+    width: 100px;
+    transition: width 0.4s ease;
+}
+
+.sidebar-container.closed .profile-info {
+    display: none;
+}
+
+.sidebar-container.closed .item-line {
+    display: none;
+}
+
+.sidebar-container.closed .graphs-sub::before {
+    display: none;
+    content: none;
+}
+
+.profile-info-area .flex-justify-center {
+    height: 106px;
+    align-items: center;
+}
+
+.sidebar-content {
+    width: 263px;
+    transition: width 0.4s ease;
+}
+
+/* ✅ 修正: opacityを消す（画像まで透明になるため） */
+.flex-justify-center a {
+    line-height: 22px;
+    width: 150px;
+    font-size: 20px;
+    letter-spacing: 0.2px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar-container.closed .flex-justify-center a {
+    width: 60px; /* 少し縮むが見える */
+    font-size: 0; /* テキスト非表示 */
+    opacity: 1; /* ←透明化しない */
+    pointer-events: auto; /* ←クリック可 */
+}
+
+/* グラフのサブメニューなど */
+.graphs-sub a {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar-container.closed .graphs-sub a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.sidebar-container.closed .flex-justify-center.login-button-orange a {
+    display: none;
+}
+
+.sidebar-container.closed .flex-justify-center.login-button-orange {
+    justify-content: center;
+    background-color: unset;
+    padding: 0;
+}
+
+.sidebar-container.closed .flex-justify-center.login-button-orange img {
+    width: 35px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.sidebar-container.closed .login-button-orange {
+    width: 100%;
+}
+
+.login-button-orange {
+    width: 215px;
+    border-radius: 50px;
+    gap: 12.5px;
+    padding: 13px 0 13px 39px;
+    margin: 35px auto;
+    background-color: transparent;
+    transition: background-color 0.4s ease 0.3s, all 0.4s ease;
+}
+
+.sidebar-container:not(.closed) .login-button-orange {
+    background-color: #ffffff;
+}
+
+.login-button-orange {
+    background-color: transparent;
+    transition: background-color 0.4s ease;
+}
+
+.login-button-orange.active {
+    background-color: #ffffff;
+}
+
+.flex-justify-center {
+    position: relative;
+}
+
+.flex-justify-center a {
+    display: flex;
+    align-items: center;
+    gap: 12.5px;
+    justify-content: space-between;
+    width: auto;
+}
+
+/* ✅ アクティブ背景の右拡張 */
+.flex-justify-center.active a {
+    position: relative;
+    background-color: rgba(242, 253, 255, 0.5);
+    border-radius: 50px 0 0 50px;
+    padding: 8px 20px;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+    width: auto;
+    z-index: 1;
+}
+
+.flex-justify-center.active a::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -10px;
+    bottom: 0;
+    width: 10px;
+    background-color: rgba(242, 253, 255, 0.5);
+    border-radius: 0;
+    z-index: -1;
+}
+.sidebar-container.closed .flex-justify-center.active a {
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+
+.sidebar-container.closed .flex-justify-center.active a::after {
+    display: none !important;
+}
+.flex-justify-center a span {
+    width: 150px;
+}
+.sidebar-container.closed .graphs-sub-extracted,
+.sidebar-container.closed .graphs-sub-contact {
+    display: none !important;
+}
+
+.sidebar-nav-top .flex-justify-center,
+.sidebar-nav-bottom .flex-justify-center {
+    max-height: 86px;
+}
+
+.sidebar-nav-bottom .logout-button {
+    justify-content: flex-start;
+}
+.login-button-orange.logout-button a {
+    background-color: #ffffff;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12.5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-container.closed .flex-justify-center.login-button-orange {
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+
+.sidebar-container.closed .flex-justify-center.login-button-orange a {
+    background-color: transparent !important;
+    display: none;
+}
+.sidebar-container.closed .flex-justify-center.login-button-orange img {
+    width: 35px;
+    height: auto;
+    margin: 0 auto;
+}
+.sidebar-container.closed .flex-justify-center.active a,
+.sidebar-container.closed .flex-justify-center.active a::after {
+    background: none !important;
+    box-shadow: none !important;
+}
+.login-button-orange.active a{
+    padding: 0 !important;
+}
+.sidebar-container:not(.closed) .flex-justify-center.login-button-orange {
+    background-color: #ffffff !important;
+    transition: background-color 0.3s ease;
+}
+
+/*------------------------------------*/

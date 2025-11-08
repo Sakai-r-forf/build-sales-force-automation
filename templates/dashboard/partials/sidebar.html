@@ -1,0 +1,120 @@
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/dashboard/common/sidebar.css') }}"
+/>
+<div class="sidebar-container">
+    <div class="sidebar-toggle" id="sidebarToggle">
+        <img src="/static/auth/image/favicon/open_close_arrow.svg" class="toggle-arrow" />
+        <div class="toggle-text">
+            <span>C</span>
+            <span>L</span>
+            <span>O</span>
+            <span>S</span>
+            <span>E</span>
+        </div>
+    </div>
+
+    <div class="sidebar-wrapper">
+        <div class="sidebar-content">
+            
+            <!-- プロフィールエリア -->
+            <div class="profile-info-area">
+                <div class="flex-justify-center">
+                    <img src="/static/auth/image/profile.png" class="profile-image" />
+                    <div class="profile-info">
+                        <p class="profile-company">有限会社ビルド</p>
+                        <p class="profile-user">阿部 謙二</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ナビゲーションエリア -->
+            <div class="sidebar-nav-area">
+                
+                <!-- 上部メニュー -->
+                <nav class="sidebar-nav-top">
+                    <ul>
+                        <li>
+                            <div class="flex-justify-center {% if request.endpoint == 'scraping.index' %}active{% endif %}">
+                                <a href="{{ url_for('scraping.index') }}"><img src="/static/auth/image/scraping.png" /><span>スクレイピング</span></a>
+                            </div>
+                        </li>
+
+                        <div class="white-border"></div>
+
+                        <li>
+                            <div class="flex-justify-center {% if request.endpoint == 'companies.index' %}active{% endif %}">
+                                <a href="{{ url_for('companies.index') }}"><img src="/static/auth/image/company.png" /><span>企業情報一覧</span></a>
+                            </div>
+                        </li>
+
+                        <div class="white-border"></div>
+
+                        <li>
+                            <div class="flex-justify-center {% if request.endpoint == 'graphs.index' %}active{% endif %}">
+                                <a href="{{ url_for('graphs.index') }}"><img src="/static/auth/image/graph.png" /><span>グラフデータ</span></a>
+                            </div>
+
+                            <div class="white-border"></div>
+
+                            <ul class="graphs-sub">
+                                <li class="graphs-sub-extracted">
+                                    <div class="item-line"></div>
+                                    <a href="#">抽出件数</a>
+                                </li>
+                                <li class="graphs-sub-contact">
+                                    <div class="item-line"></div>
+                                    <a href="#">連絡件数</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- 下部メニュー -->
+                <nav class="sidebar-nav-bottom">
+                    <ul>
+                        <div class="white-border"></div>
+
+                        <li>
+                            <div class="flex-justify-center {% if request.endpoint == 'faq.index' %}active{% endif %}">
+                                <a href="{{ url_for('faq.index') }}"><img src="/static/auth/image/faq.png" /><span>FAQ（使い方）</span></a>
+                            </div>
+                        </li>
+
+                        <div class="white-border"></div>
+
+                        <li>
+                            <div class="flex-justify-center login-button-orange logout-button">
+                                <img src="/static/auth/image/logout_button.png" />
+                                <a href="{{ url_for('auth.logout') }}">ログアウト</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebarContainer = document.querySelector('.sidebar-container');
+        const toggleButton = document.querySelector('#sidebarToggle');
+        const loginButton = document.querySelector('.login-button-orange');
+
+    toggleButton.addEventListener('click', () => {
+        const isClosed = sidebarContainer.classList.contains('closed');
+        sidebarContainer.classList.toggle('closed');
+
+        if (isClosed) {
+        setTimeout(() => {
+            loginButton.classList.add('active');
+        }, 400);
+        } else {
+        loginButton.classList.remove('active');
+        }
+    });
+    });
+</script>

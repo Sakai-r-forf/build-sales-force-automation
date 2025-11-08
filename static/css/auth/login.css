@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+}
+
+.login-container {
+  height: 100vh; /* 758 × 0.687 */
+  /* background-image: url("image/login.png"); */
+  background-image: url("/static/auth/image/login.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-content {
+  min-width: 387px; /* 564 × 0.687 */
+  min-height: 467px; /* 680 × 0.687 */
+  max-height: 467px; /* 680 × 0.687 */
+  background-color: rgb(255 255 255 / 25%);
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+  /* backdrop-filter: blur(10px); */
+  /* padding: 148px 52px; */ /* 219 × 0.687 */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 148px 52px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 43px; /*  */
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-group input {
+  height: 55px; /*  */
+  /* padding: 17px 0 17px 13px; */ /*  */
+  font-size: 24px;
+  font-weight: bold;
+  color: rgb(0, 0, 0, 0.3);
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #1e8697;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.form-group01{
+  margin-bottom: 42px;
+}
+.form-group02{
+  margin-bottom: 86px;
+}
+
+::placeholder {
+  font-size: 16px;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  position: relative;
+  bottom: 2px;
+}
+
+button[type="submit"] {
+  height: 56px;
+  border: none;
+  border-radius: 10px;
+  background-color: #d49218;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transition: 0.2s ease-in-out;
+  width: 100%;
+}
+
+button[type="submit"]:hover {
+  filter: brightness(1.05);
+}
+
+button[type="submit"]:active {
+  filter: brightness(0.9);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+}
