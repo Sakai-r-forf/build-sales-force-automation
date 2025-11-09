@@ -1,4 +1,3 @@
-# app.py
 import os
 from flask import Flask
 from flask_login import LoginManager
@@ -8,11 +7,17 @@ from views.auth import auth_bp
 from views.scraping import scraping_bp
 from views.companies import companies_bp
 from views.graphs import graphs_bp
-from views.faq import faq_bp
+from views.faq import faq_bp 
 
 app = Flask(__name__)
+
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "CHANGE_ME")
-app.config.setdefault("SQLALCHEMY_DATABASE_URI", os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///app.db"))
+app.config.setdefault(
+    "SQLALCHEMY_DATABASE_URI",
+    os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///app.db")
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["JSON_AS_ASCII"] = False
 
 init_db(app)
 
@@ -28,6 +33,10 @@ app.register_blueprint(scraping_bp, url_prefix="/scraping")
 app.register_blueprint(companies_bp, url_prefix="/companies")
 app.register_blueprint(graphs_bp, url_prefix="/graphs")
 app.register_blueprint(faq_bp, url_prefix="/faq")
+
+@app.get("/healthz")
+def healthz():
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=7700, debug=True)

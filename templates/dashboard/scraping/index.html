@@ -19,7 +19,7 @@
         />
         <p class="faq-link">
           企業一覧が掲載されているサイトのURLを入力してください<a
-            href="{{ url_for('scraping.index') }}"
+            href="{{ url_for('faq.index') }}"
             >（詳細はこちら）</a
           >
         </p>
@@ -28,7 +28,7 @@
         <input name="allowed_domain" placeholder="example.com" />
         <p class="faq-link">
           空欄の場合、上記サイト内のみから情報を抽出します<a
-            href="{{ url_for('scraping.index') }}"
+            href="{{ url_for('faq.index') }}"
             >（詳細はこちら）</a
           >
         </p>
@@ -47,15 +47,13 @@
             <p class="faq-link">
               サイトから抽出する企業数の上限を設定します</br>
               <a
-                href="{{ url_for('scraping.index') }}"
+                href="{{ url_for('faq.index') }}"
                 >（詳細はこちら）</a
               >
             </p>
           </div>
 
-          <div>
-            <!--TODO：サイズを均等にする（50%：50%）-->
-            <!-- TODO: 誤爆防止や件数を増やすことによる注意事項を記載 -->
+          <div class="flex-2">
             <label>最大取得ページ数</label>
             <input
               name="max_pages"
@@ -69,7 +67,7 @@
             <p class="faq-link">
               サーバー負荷軽減のための制限数です</br>
               <a
-                href="{{ url_for('scraping.index') }}"
+                href="{{ url_for('faq.index') }}"
                 >（詳細はこちら）</a
               >
             </p>
@@ -78,14 +76,14 @@
 
         <label>絞り込みキーワード</label>
         <textarea
+          id="jp_keywords"
           name="jp_keywords"
           rows="4"
-          placeholder="株式会社・有限会社・建設・工務店・お問い合わせ・会社概要"
+          placeholder="株式会社,有限会社,建設,工務店,お問い合わせ,会社概要"
         ></textarea>
-        <!-- TODO FAQリンク挿入 -->
         <p class="faq-link">
-          企業名や業種に関連するキーワードを1ワード、1改行で入力してください<a
-            href="{{ url_for('scraping.index') }}"
+          企業名や業種に関連するキーワードを1ワード毎に「,」で区切り入力をしてください<a
+            href="{{ url_for('faq.index') }}"
             >（詳細はこちら）</a
           >
         </p>
@@ -96,5 +94,42 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const textarea = document.getElementById("jp_keywords");
+  if (!textarea) return;
+
+  let composing = false;
+
+  textarea.addEventListener("compositionstart", () => composing = true);
+  textarea.addEventListener("compositionend", () => composing = false);
+
+  textarea.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+
+      if (composing) return;
+
+      e.preventDefault();
+
+      const s = textarea.selectionStart;
+      const ePos = textarea.selectionEnd;
+      const v = textarea.value;
+
+      textarea.value = v.slice(0, s) + ",\n" + v.slice(ePos);
+      textarea.selectionStart = textarea.selectionEnd = s + 2;
+    }
+  });
+  /* 必要になったら使用する。
+    textarea.addEventListener("input", () => {
+      if (composing) return;
+
+      textarea.value = textarea.value
+        .replace(/[ 、。\.\/\\・　]/g, ",") 
+        .replace(/,+/g, ",");
+    });
+  */
+});
+</script>
 
 {% endblock %}

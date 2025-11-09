@@ -7,3 +7,5 @@ Flask-SQLAlchemy
 Werkzeug>=3.0
 Flask-Login>=0.6
 gunicorn>=21.2
+pymysql
+cryptography

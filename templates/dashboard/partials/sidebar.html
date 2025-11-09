@@ -17,7 +17,6 @@
     <div class="sidebar-wrapper">
         <div class="sidebar-content">
             
-            <!-- プロフィールエリア -->
             <div class="profile-info-area">
                 <div class="flex-justify-center">
                     <img src="/static/auth/image/profile.png" class="profile-image" />
@@ -28,10 +27,8 @@
                 </div>
             </div>
 
-            <!-- ナビゲーションエリア -->
             <div class="sidebar-nav-area">
                 
-                <!-- 上部メニュー -->
                 <nav class="sidebar-nav-top">
                     <ul>
                         <li>
@@ -98,23 +95,48 @@
     </div>
 </div>
 
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', () => {
         const sidebarContainer = document.querySelector('.sidebar-container');
         const toggleButton = document.querySelector('#sidebarToggle');
         const loginButton = document.querySelector('.login-button-orange');
+        const toggleText = document.querySelector('.toggle-text');
+        const dashboardRight = document.querySelector('.dashboard_flex_right'); // ← ★追加！
 
-    toggleButton.addEventListener('click', () => {
-        const isClosed = sidebarContainer.classList.contains('closed');
-        sidebarContainer.classList.toggle('closed');
-
-        if (isClosed) {
-        setTimeout(() => {
-            loginButton.classList.add('active');
-        }, 400);
-        } else {
-        loginButton.classList.remove('active');
+        function updateToggleText() {
+            if (sidebarContainer.classList.contains('closed')) {
+                toggleText.innerHTML = `
+                    <span>O</span>
+                    <span>P</span>
+                    <span>E</span>
+                    <span>N</span>
+                `;
+            } else {
+                toggleText.innerHTML = `
+                    <span>C</span>
+                    <span>L</span>
+                    <span>O</span>
+                    <span>S</span>
+                    <span>E</span>
+                `;
+            }
         }
-    });
+
+        updateToggleText();
+
+        toggleButton.addEventListener('click', () => {
+            const isClosed = sidebarContainer.classList.contains('closed');
+            sidebarContainer.classList.toggle('closed');
+
+            dashboardRight.classList.toggle('sidebar-closed', !isClosed);
+
+            updateToggleText();
+
+            if (isClosed) {
+                setTimeout(() => loginButton.classList.add('active'), 400);
+            } else {
+                loginButton.classList.remove('active');
+            }
+        });
     });
 </script>
