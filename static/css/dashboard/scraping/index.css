@@ -1,14 +1,8 @@
-/*
-.dashboard_flex_right {
-  width: auto !important;
-}
-*/
-
 .scraping-container {
   margin: 60px auto;
   margin-inline: auto;
   margin-left: 0;
-  width: 930px;
+  width: 918px;
 }
 
 .scraping-wrapper {
@@ -16,7 +10,8 @@
   border-radius: 10px;
   border: 1px solid rgba(30, 134, 151, 0.7);
   padding: 48px 53px;
-  box-shadow: 14px 14px 0 0 #4cc1e0, inset 0 0 0 1px rgba(30, 134, 151, 0.7);
+  padding-top: 0;
+  box-shadow: 12px 12px 0 0 #4cc1e0, inset 0 0 0 1px rgba(30, 134, 151, 0.7);
 }
 
 form {
@@ -26,9 +21,6 @@ form {
 
 input,
 textarea {
-  /*
-  width: 694px;
-  */
   width: 100%;
   border: 1px solid rgba(30, 134, 151, 0.7);
   background: #ffffff;
@@ -60,6 +52,9 @@ label {
   letter-spacing: 0.2px;
 }
 
+.scraping-content{
+  margin-top: 20px;
+}
 .flex {
   display: flex;
   gap: 43px;
@@ -68,9 +63,6 @@ label {
 .flex label {
   display: block;
   width: 217px;
-  /*
-  margin: 50px 0 0 0;
-  */
   margin: 0;
   padding: 6px 0 6px 18px;
   flex-shrink: 0;
@@ -90,7 +82,7 @@ button {
   width: 358px;
   height: 54px;
   margin: 50px auto 0;
-  border-radius: 80px;
+  border-radius: 10px;
   border: none;
   background: #d49218;
   color: #ffffff;
@@ -109,4 +101,23 @@ button {
   text-align: center;
   color: #6b7b86;
   font-size: 12px;
+}
+
+.flex-2{
+  width:50%;
+}
+label{
+  width:240px;
+  box-sizing:border-box;
+  height: 30px;
+  line-height: 1.2;
+}
+.flex label {
+  width:240px;
+  box-sizing:border-box;
+  margin-top:50px;
+}
+.flex input {
+    width: 100%;
+    margin: 10px 0;
 }

@@ -1,8 +1,9 @@
 * {
   margin: 0;
 }
-
-body {
+body,
+html {
+  overflow-x: hidden;
   font-family: "Inter", sans-serif;
 }
 
@@ -10,12 +11,13 @@ button,a:hover,
 input:hover{
   cursor: pointer;
 }
-
+/*
 .dashboard_flex_content {
   display: flex;
   justify-content: space-between;
   gap: 50px;
 }
+*/
 .dashboard_flex_left_area{
   width: 100%;
 }
@@ -23,13 +25,11 @@ input:hover{
   width: 263px;
 }
 .dashboard_flex_right {
-  /*
-  background-color: #f7f7f7;
-  */
-  border: rgba(30, 134, 151, 0.7);
-  /*
-  box-shadow: #4cc1e0;
-  */
   width: 100%;
-  margin-left: 70px;
+  margin-left: 368px;
+  transition: margin-left 0.35s ease;
+}
+
+.dashboard_flex_right.sidebar-closed {
+  margin-left: 268px;
 }

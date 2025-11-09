@@ -9,10 +9,6 @@
 .sidebar-content {
     background: linear-gradient(to top, #20c1d3, #4dc1e1);
     width: 263px;
-    /*
-    min-height: 978px;
-    max-height: 978px;
-    */
     min-height: 100vh;
     max-height: 100vh;
     box-sizing: border-box;
@@ -24,7 +20,7 @@
 .profile-info-area .flex-justify-center,
 .sidebar-nav-top .flex-justify-center,
 .sidebar-nav-bottom .flex-justify-center {
-    gap: 12.5px;
+    gap: 16.5px;
 }
 
 .profile-info-area {
@@ -41,8 +37,8 @@
 }
 
 .profile-image {
-  width: 55px;
-  height: 55px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
   display: block;
 }
@@ -128,7 +124,7 @@
 .graphs-sub {
   list-style: none;
   padding: 0 0 0 20px;
-  margin: 15px 0 0 50px;
+  margin: 15px 0 0 65px;
   position: relative;
 }
 
@@ -198,9 +194,6 @@
   white-space: nowrap;
 }
 
-/*------------------------------------*/
-/* サイドバーオープンクローズ              */
-/*------------------------------------*/
 .sidebar-container {
     position: fixed;
     transition: all 0.4s ease;
@@ -208,7 +201,7 @@
 
 .sidebar-toggle {
     position: absolute;
-    top: 112px;
+    top: 90.5px;
     transform: translateY(-50%);
     width: 42px;
     height: 165px;
@@ -221,7 +214,8 @@
     cursor: pointer;
     transition: all 0.4s ease;
     z-index: 1000;
-    left: 263px;
+    left: 300px;
+    margin-top: 5px;
 }
 
 .sidebar-container.closed .sidebar-toggle {
@@ -233,6 +227,8 @@
     height: 27px;
     margin-bottom: 10px;
     transition: transform 0.4s ease;
+    position: relative;
+    top: 4px;
 }
 
 .sidebar-toggle .toggle-text {
@@ -251,19 +247,38 @@
 
 .sidebar-container.closed .toggle-arrow {
     transform: rotate(180deg);
+    opacity: 80%;
+}
+.sidebar-container.closed .logout-button img {
+  content: url("/static/auth/image/logout.png");
 }
 
-.sidebar-container.closed .toggle-text span {
-    content: "OPEN";
+
+.toggle-text{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  transition: all 0.3s ease;
+}
+.sidebar-container.closed .toggle-text span{
+  position:relative;
+  top:-5px;
+}
+.sidebar-container.closed .white-border{
+  box-sizing: border-box;
+  width: 66px;
+  margin: 0 auto;
+}
+.sidebar-container.closed .profile-info-area{
+  width: 66px;
+  margin: 0 auto;
 }
 
-/* ✅ 修正: aはそのまま、spanだけ非表示 */
 .sidebar-container.closed .sidebar-content a span {
     display: none;
 }
-
-/* ✅ 以前のdisplay: none;削除済み */
-/* .sidebar-container.closed .sidebar-content a { display: none; } */
 
 .sidebar-container.closed .sidebar-content img {
     margin: 0 auto;
@@ -290,20 +305,20 @@
     content: none;
 }
 
+
 .profile-info-area .flex-justify-center {
     height: 106px;
     align-items: center;
 }
 
 .sidebar-content {
-    width: 263px;
+    width: 300px;
     transition: width 0.4s ease;
 }
 
-/* ✅ 修正: opacityを消す（画像まで透明になるため） */
 .flex-justify-center a {
     line-height: 22px;
-    width: 150px;
+    width: 215px;
     font-size: 20px;
     letter-spacing: 0.2px;
     transition: all 0.3s ease;
@@ -311,13 +326,12 @@
 }
 
 .sidebar-container.closed .flex-justify-center a {
-    width: 60px; /* 少し縮むが見える */
-    font-size: 0; /* テキスト非表示 */
-    opacity: 1; /* ←透明化しない */
-    pointer-events: auto; /* ←クリック可 */
+    width: 60px;
+    font-size: 0;
+    opacity: 1;
+    pointer-events: auto;
 }
 
-/* グラフのサブメニューなど */
 .graphs-sub a {
     transition: all 0.3s ease;
     white-space: nowrap;
@@ -403,9 +417,9 @@
     content: "";
     position: absolute;
     top: 0;
-    right: -10px;
+    right: -25px;
     bottom: 0;
-    width: 10px;
+    width: 25px;
     background-color: rgba(242, 253, 255, 0.5);
     border-radius: 0;
     z-index: -1;
@@ -419,7 +433,7 @@
     display: none !important;
 }
 .flex-justify-center a span {
-    width: 150px;
+  width: 156px;
 }
 .sidebar-container.closed .graphs-sub-extracted,
 .sidebar-container.closed .graphs-sub-contact {
@@ -470,5 +484,3 @@
     background-color: #ffffff !important;
     transition: background-color 0.3s ease;
 }
-
-/*------------------------------------*/

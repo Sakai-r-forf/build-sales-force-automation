@@ -41,8 +41,7 @@
   outline: none;
   background: transparent;
   font-size: 16px;
-  font-weight: bold;
-  color: #d49218;
+  color: #1d1d1d;
   text-align: center;
   padding-left: 5px;
   padding-right: 5px;
@@ -82,6 +81,8 @@
 
 .companies-table thead {
   background: linear-gradient(to right, #20c1d3, #4dc1e1);
+  max-height: 65px;
+  box-sizing: border-box;
 }
 
 .companies-table thead th {
@@ -92,15 +93,18 @@
   font-weight: bold;
   color: #ffffff;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .companies-table thead th:first-child {
   padding: 13px 18px;
   border-left: none;
+  min-width: 100px;
 }
 
 .companies-table tbody tr:first-child td {
   border-top: 1px solid rgba(30, 134, 151, 0.8);
+  line-height: 1.2;
 }
 
 .companies-table tbody tr:last-child td:first-child {
@@ -109,6 +113,24 @@
 
 .companies-table tbody tr:last-child td:last-child {
   border-radius: 0 0 20px 0;
+}
+.companies-table tbody .companyName{
+  text-align: left;
+}
+.companies-table thead .companyName,
+.companies-table thead .companySite,
+.companies-table thead .inquiryUrl,
+.companies-table tbody .companyName,
+.companies-table tbody .companySite,
+.companies-table tbody .inquiryUrl {
+  max-width: 200px;
+  width: 200px;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+.companies-table tbody .companyName{
+  text-align: left;
 }
 
 .companies-table tbody td {
