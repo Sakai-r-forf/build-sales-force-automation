@@ -3,8 +3,7 @@
 }
 
 .login-container {
-  height: 100vh; /* 758 × 0.687 */
-  /* background-image: url("image/login.png"); */
+  height: 100vh;
   background-image: url("/static/auth/image/login.svg");
   background-repeat: no-repeat;
   background-position: center;
@@ -15,14 +14,12 @@
 }
 
 .login-content {
-  min-width: 387px; /* 564 × 0.687 */
-  min-height: 467px; /* 680 × 0.687 */
-  max-height: 467px; /* 680 × 0.687 */
+  min-width: 387px;
+  min-height: 467px;
+  max-height: 467px;
   background-color: rgb(255 255 255 / 25%);
   border-radius: 10px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
-  /* backdrop-filter: blur(10px); */
-  /* padding: 148px 52px; */ /* 219 × 0.687 */
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -40,20 +37,27 @@
   font-size: 14px;
   font-weight: 500;
 }
-
 .form-group input {
-  height: 55px; /*  */
-  /* padding: 17px 0 17px 13px; */ /*  */
-  font-size: 24px;
+  height: 55px;
+  font-size: 16px;
   font-weight: bold;
-  color: rgb(0, 0, 0, 0.3);
+  color: rgb(0, 0, 0);
   background-color: #ffffff;
   border-radius: 10px;
-  padding: 10px;
-  box-sizing: border-box;
   border: 1px solid #1e8697;
   min-width: 300px;
   max-width: 300px;
+  box-sizing: border-box;
+  padding: 0 13px;
+  line-height: 55px;
+}
+
+.form-group input::placeholder {
+  font-size: 16px;
+  color: rgba(0,0,0,0.3);
+  line-height: 55px;
+  position:relative;
+  top:1px;
 }
 
 .form-group01{

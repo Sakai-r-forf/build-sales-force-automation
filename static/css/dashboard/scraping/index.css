@@ -90,11 +90,6 @@ button {
   width: 358px;
   height: 54px;
   margin: 50px auto 0;
-  /* padding: 25px 0; */
-  border-radius: 80px;
-  padding: 25px 0;
-  border-radius: 10px;
-  /* padding: 25px 0; */
   border-radius: 80px;
   border: none;
   background: #d49218;
@@ -103,7 +98,11 @@ button {
   font-weight: bold;
   letter-spacing: 0.2px;
   box-sizing: border-box;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+  padding: 0;
 }
 
 .hint {
