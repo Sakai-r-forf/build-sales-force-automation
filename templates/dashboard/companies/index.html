@@ -10,13 +10,19 @@
     <div class="search-container">
         <div class="search-wrapper">
             <div class="search-content">
-                <p>企業名で検索</p>
-                <div class="search-divider"></div>                
-                <img src="/static/auth/image/favicon/favicon.png" />
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="企業名で検索"
+                    class="search-input"
+                />
+                <div class="search-divider"></div>
+                <button id="search-btn" type="button">
+                    <img src="/static/auth/image/favicon/favicon.png" alt="検索" />
+                </button>
             </div>
         </div>
     </div>
-        
     
     <div class="company-list-container">
         <div class="company-list-wrapper">
@@ -62,7 +68,7 @@
 
     <div class="page-top-container">
         <div class="page-top-wrapper">
-            <div class="page-top-content">
+            <div class="page-top-content" id="pageTopBtn">
                 <img src="/static/auth/image/page-top-button.png" />
             </div>
         </div>
@@ -99,498 +105,156 @@
 
 
 <script>
-  const pages = [
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ],
-    [
-        {
-            mailStatus: "□",
-            id: "1234",
-            companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇...",
-            companySite: "https://k-soush...",
-            inquiryUrl: "https://k-soush...",
-            savedDate: "yyyy/mm/dd",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        },
-        {
-            mailStatus: "□",
-            id: "",
-            companyName: "",
-            companySite: "",
-            inquiryUrl: "",
-            savedDate: "",
-        }
-    ]    
-  ];
+    const pages = Array.from({ length: 50 }, (_, pageIndex) => {
+        return [
+            {
+                mailStatus: false,
+                id: "1234",
+                companyName: "株式会社創伸建設〇〇株式会社創伸建設〇〇株式会社創伸建設...",
+                companySite: "https://k-soush...",
+                inquiryUrl: "https://k-soush...",
+                savedDate: "yyyy/mm/dd",
+            },
+            // 残り99件を空データとして生成
+            ...Array.from({ length: 99 }, () => ({
+                mailStatus: false,
+                id: "",
+                companyName: "",
+                companySite: "",
+                inquiryUrl: "",
+                savedDate: "",
+            }))
+        ];
+    });
+    const tbody = document.getElementById("companies-tbody");
+    const pagerEl = document.getElementById("companies-pager");
+    let page = 1;
+    const totalPages = pages.length;
 
-  const tbody = document.getElementById("companies-tbody");
-  const pagerEl = document.getElementById("companies-pager");
-  let page = 1;
-  const totalPages = pages.length;
-
-  const rowHTML = (r) =>
-    `<tr>
-    <td>${r.mailStatus || ""}</td>
-    <td>${r.id || ""}</td>
-    <td>${r.companyName || ""}</td>
-    <td>${r.companySite || ""}</td>
-    <td>${r.inquiryUrl || ""}</td>
-    <td>${r.savedDate || ""}</td>
-  </tr>`;
-
-  function renderTable(page1) {
-    const rows = pages[page1 - 1] ?? [];
-    tbody.innerHTML = rows.map(rowHTML).join("");
-  }
-
-  function buildPagerHTML(page1, total) {
-    const parts = [];
-    if (page1 > 1)
-      parts.push(
-        `<a class="search-list-pagination pager-btn" data-page="${
-          page1 - 1
-        }" href="#top">< 前へ</a>`
-      );
-    for (let p = 1; p <= total; p++) {
-      const isNearStart = page1 <= 3 && p <= 5;
-      const isNearEnd = page1 >= total - 2 && p >= total - 4;
-      const inWindow =
-        p === 1 || p === total || (p >= page1 - 2 && p <= page1 + 2);
-      if (isNearStart || isNearEnd || inWindow) {
-        parts.push(
-          p === page1
-            ? `<span class="current">${p}</span>`
-            : `<a class="search-list-pagination" data-page="${p}" href="#top">${p}</a>`
-        );
-      } else if (p === 2 && page1 > 4) {
-        parts.push(`<span class="dots">...</span>`);
-      } else if (p === total - 1 && page1 < total - 3) {
-        parts.push(`<span class="dots">...</span>`);
-      }
+    function truncateTo20(str) {
+        let chars = Array.from(str);
+        if (chars.length > 20) {
+            return chars.slice(0, 20).join('') + '…';
+        }
+        return str;
     }
-    if (page1 < total)
-      parts.push(
-        `<a class="search-list-pagination pager-btn" data-page="${
-          page1 + 1
-        }" href="#top">次へ ></a>`
-      );
-    return parts.join("");
-  }
-
-  function renderPager() {
-    pagerEl.innerHTML = buildPagerHTML(page, totalPages);
-  }
-
-  pagerEl.addEventListener("click", (e) => {
-    const a = e.target.closest(".search-list-pagination");
-    if (!a) return;
-    const to = Number(a.dataset.page);
-    if (!Number.isFinite(to) || to < 1 || to > totalPages) return;
-    page = to;
-    renderTable(page);
+    const rowHTML = (r, index) =>
+        `<tr>
+            <td class="mailStatus">
+                <input type="checkbox" id="chk_${page}_${index}" ${r.mailStatus ? "checked" : ""}>
+            </td>
+            <td class="id">${r.id || ""}</td>
+            <td class="companyName">${r.companyName || ""}</td>
+            <td class="companySite"><a href="${r.companySite || "#"}" target="_blank">${r.companySite || ""}</a></td>
+            <td class="inquiryUrl"><a href="${r.inquiryUrl || "#"}" target="_blank">${r.inquiryUrl || ""}</a></td>
+            <td class="savedDate">${r.savedDate || ""}</td>
+        </tr>`;
+    
+    // テーブル描画（truncate適用）
+    function renderTable(pageNum) {
+        const rows = pages[pageNum - 1] ?? [];
+        tbody.innerHTML = "";
+        rows.forEach((row, i) => {
+            const truncatedRow = { ...row, companyName: truncateTo20(row.companyName) };
+            tbody.insertAdjacentHTML("beforeend", rowHTML(truncatedRow, i));
+        });
+    }
+    
+    // ページャー生成
+    function buildPagerHTML(pageNum, total) {
+        const parts = [];
+        if (pageNum > 1)
+            parts.push(`<a class="search-list-pagination pager-btn" data-page="${pageNum - 1}" href="#top">< 前へ</a>`);
+        for (let p = 1; p <= total; p++) {
+            const isNearStart = pageNum <= 3 && p <= 5;
+            const isNearEnd = pageNum >= total - 2 && p >= total - 4;
+            const inWindow = p === 1 || p === total || (p >= pageNum - 2 && p <= pageNum + 2);
+            if (isNearStart || isNearEnd || inWindow) {
+                parts.push(p === pageNum
+                    ? `<span class="current">${p}</span>`
+                    : `<a class="search-list-pagination" data-page="${p}" href="#top">${p}</a>`
+                );
+            } else if (p === 2 && pageNum > 4) {
+                parts.push(`<span class="dots">...</span>`);
+            } else if (p === total - 1 && pageNum < total - 3) {
+                parts.push(`<span class="dots">...</span>`);
+            }
+        }
+        if (pageNum < total)
+            parts.push(`<a class="search-list-pagination pager-btn" data-page="${pageNum + 1}" href="#top">次へ ></a>`);
+        return parts.join("");
+    }
+    
+    // ページャー描画
+    function renderPager() {
+        pagerEl.innerHTML = buildPagerHTML(page, totalPages);
+    }
+    
+    document.addEventListener("change", (e) => {
+        if (e.target.matches(".mailStatus input[type='checkbox']")) {
+            const [_, p, i] = e.target.id.split("_");
+            pages[p - 1][i].mailStatus = e.target.checked;
+        }
+    });
+    
+    pagerEl.addEventListener("click", (e) => {
+        const a = e.target.closest(".search-list-pagination");
+        if (!a) return;
+        const to = Number(a.dataset.page);
+        if (!Number.isFinite(to) || to < 1 || to > totalPages) return;
+        page = to;
+        renderTable(page);
+        renderPager();
+    });
+    
+    // 初期描画
     renderPager();
-  });
+    renderTable(page);
+</script>
 
-  renderPager();
-  renderTable(page);
+<script>
+    const searchInput = document.getElementById("search-input");
+    const searchBtn = document.getElementById("search-btn");
+
+    function searchCompaniesAllPages() {
+        const query = searchInput.value.trim().toLowerCase();
+        if (!query) {
+
+            renderTable(page);
+            renderPager();
+            return;
+        }
+
+        const allData = pages.flat();
+        const filtered = allData.filter(row => row.companyName.toLowerCase().includes(query));
+
+        tbody.innerHTML = "";
+        filtered.forEach((row, i) => {
+            const truncatedRow = { ...row, companyName: truncateTo20(row.companyName) };
+            tbody.insertAdjacentHTML("beforeend", rowHTML(truncatedRow, i));
+        });
+
+        pagerEl.innerHTML = "";
+    }
+
+    searchBtn.addEventListener("click", searchCompaniesAllPages);
+
+    searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            searchCompaniesAllPages();
+        }
+    });
+</script>
+
+<script>
+    const pageTopBtn = document.getElementById("pageTopBtn");
+
+    pageTopBtn.addEventListener("click", () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth" // ぬるっとスクロール
+        });
+    });
 </script>
 {% endblock %}

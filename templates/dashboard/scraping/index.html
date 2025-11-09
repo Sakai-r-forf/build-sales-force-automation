@@ -1,5 +1,6 @@
-{% extends "dashboard/base.html" %} {% block title %}建設業
-企業情報スクレイパー{% endblock %} {% block head %}
+{% extends "dashboard/base.html" %} 
+{% block title %}建設業 企業情報スクレイパー{% endblock %} 
+{% block head %}
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/dashboard/scraping/index.css') }}"
@@ -16,7 +17,6 @@
           name="seed_url"
           placeholder="https://example.com/member"
         />
-        <!-- TODO FAQリンク挿入 -->
         <p class="faq-link">
           企業一覧が掲載されているサイトのURLを入力してください<a
             href="{{ url_for('scraping.index') }}"
@@ -26,7 +26,6 @@
 
         <label>抽出範囲の制限（空欄可）</label>
         <input name="allowed_domain" placeholder="example.com" />
-        <!-- TODO FAQリンク挿入 -->
         <p class="faq-link">
           空欄の場合、上記サイト内のみから情報を抽出します<a
             href="{{ url_for('scraping.index') }}"
@@ -36,7 +35,7 @@
 
         <div class="flex">
           <div class="flex-2">
-            <label>最大取得企業数</label>
+            <label>最大取得件数</label>
             <input
               name="limit"
               type="number"
@@ -45,7 +44,6 @@
               value="100"
               placeholder="既定値：100"
             />
-            <!-- TODO FAQリンク挿入 -->
             <p class="faq-link">
               サイトから抽出する企業数の上限を設定します</br>
               <a
@@ -56,6 +54,7 @@
           </div>
 
           <div>
+            <!--TODO：サイズを均等にする（50%：50%）-->
             <!-- TODO: 誤爆防止や件数を増やすことによる注意事項を記載 -->
             <label>最大取得ページ数</label>
             <input

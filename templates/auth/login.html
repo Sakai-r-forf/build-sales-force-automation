@@ -7,7 +7,6 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/auth/login.css') }}"
     />
-
     <title>ログイン</title>
   </head>
 
@@ -16,7 +15,7 @@
       <div class="login-wrapper">
         <div class="login-content">
           <form action="/login" method="post">
-            <div class="form-group">
+            <div class="form-group form-group01">
               <label for="email" class="sr-only">メールアドレス</label>
               <input
                 type="email"
@@ -26,8 +25,7 @@
                 required
               />
             </div>
-
-            <div class="form-group">
+            <div class="form-group form-group02">
               <label for="password" class="sr-only">パスワード</label>
               <input
                 type="password"
@@ -37,8 +35,9 @@
                 required
               />
             </div>
-
-            <button type="submit">ログイン</button>
+            <div class="form-button">
+              <button type="submit">ログイン</button>
+            </div>
           </form>
         </div>
       </div>
