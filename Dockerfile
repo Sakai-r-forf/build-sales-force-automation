@@ -19,4 +19,4 @@ COPY . .
 
 EXPOSE 7700
 
-CMD ["gunicorn", "-b", "0.0.0.0:7700", "app:app", "--workers", "2", "--threads", "4", "--timeout", "120"]
+CMD ["sh", "-c", "gunicorn -b 0.0.0.0:${PORT:-7700} app:app --workers 2 --threads 4 --timeout 120"]
