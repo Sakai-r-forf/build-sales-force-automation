@@ -1,16 +1,29 @@
+substitutions:
+  _REGION: asia-northeast1
+  _REPOSITORY: scraper-repo
+  _IMAGE: scraper-app
+
 steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - build
-      - -t
-      - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:${SHORT_SHA}
-      - -t
-      - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:latest
       - -f
-      - Dockerfile
+      - construction_scraper_project/Dockerfile
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:${SHORT_SHA}
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:latest
       - .
-images:
-  - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:${SHORT_SHA}
-  - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:latest
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:${SHORT_SHA}
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:latest
+
 options:
   logging: CLOUD_LOGGING_ONLY
