@@ -34,7 +34,7 @@ app.register_blueprint(companies_bp, url_prefix="/companies")
 app.register_blueprint(graphs_bp, url_prefix="/graphs")
 app.register_blueprint(faq_bp, url_prefix="/faq")
 
-@app.get("/")
+@app.route("/")
 def index():
     if not current_user.is_authenticated:
         return redirect(url_for("auth.login"))
