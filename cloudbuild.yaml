@@ -8,7 +8,9 @@ steps:
       - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:latest
       - -f
       - Dockerfile
-      - construction_scraper_project
-
+      - .
+images:
+  - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:${SHORT_SHA}
+  - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:latest
 options:
   logging: CLOUD_LOGGING_ONLY
