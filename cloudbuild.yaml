@@ -1,0 +1,15 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    dir: construction_scraper_project
+    args:
+      - build
+      - "-t"
+      - "asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:${SHORT_SHA}"
+      - .
+
+images:
+  - "asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:${SHORT_SHA}"
+  - "asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:latest"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
