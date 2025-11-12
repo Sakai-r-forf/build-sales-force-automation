@@ -1,6 +1,6 @@
 import os
-from flask import Flask
-from flask_login import LoginManager
+from flask import Flask, redirect, url_for
+from flask_login import LoginManager, current_user
 from models import init_db, db
 from models.user import User
 from views.auth import auth_bp
@@ -33,6 +33,12 @@ app.register_blueprint(scraping_bp, url_prefix="/scraping")
 app.register_blueprint(companies_bp, url_prefix="/companies")
 app.register_blueprint(graphs_bp, url_prefix="/graphs")
 app.register_blueprint(faq_bp, url_prefix="/faq")
+
+@app.get("/")
+def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login"))
+    return redirect(url_for("companies.index"))
 
 @app.get("/healthz")
 def healthz():
