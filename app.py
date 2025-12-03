@@ -7,7 +7,8 @@ from views.auth import auth_bp
 from views.scraping import scraping_bp
 from views.companies import companies_bp
 from views.graphs import graphs_bp
-from views.faq import faq_bp 
+from views.faq import faq_bp
+from views.companies_delete import companies_delete_bp
 
 app = Flask(__name__)
 
@@ -33,6 +34,7 @@ app.register_blueprint(scraping_bp, url_prefix="/scraping")
 app.register_blueprint(companies_bp, url_prefix="/companies")
 app.register_blueprint(graphs_bp, url_prefix="/graphs")
 app.register_blueprint(faq_bp, url_prefix="/faq")
+app.register_blueprint(companies_delete_bp, url_prefix="/companies_delete")
 
 @app.route("/")
 def index():

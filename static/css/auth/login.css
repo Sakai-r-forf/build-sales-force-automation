@@ -14,78 +14,79 @@
 }
 
 .login-content {
-  min-width: 387px;
-  min-height: 467px;
-  max-height: 467px;
+  min-width: calc(387 / 1366 * 100vw);
+  min-height: calc(467 / 1366 * 100vw);
+  max-height: calc(467 / 1366 * 100vw);
   background-color: rgb(255 255 255 / 25%);
-  border-radius: 10px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+  border-radius: calc(10 / 1366 * 100vw);
+  box-shadow: 0 0 calc(30 / 1366 * 100vw) rgba(0, 0, 0, 0.25);
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 148px 52px;
+  padding: calc(148 / 1366 * 100vw) calc(52 / 1366 * 100vw);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 43px; /*  */
+  gap: calc(43 / 1366 * 100vw);
 }
 
 .form-group label {
-  font-size: 14px;
+  font-size: calc(14 / 1366 * 100vw);
   font-weight: 500;
 }
+
 .form-group input {
-  height: 55px;
-  font-size: 16px;
+  height: calc(55 / 1366 * 100vw);
+  font-size: calc(16 / 1366 * 100vw);
   font-weight: bold;
   color: rgb(0, 0, 0);
   background-color: #ffffff;
-  border-radius: 10px;
+  border-radius: calc(10 / 1366 * 100vw);
   border: 1px solid #1e8697;
-  min-width: 300px;
-  max-width: 300px;
+  min-width: calc(300 / 1366 * 100vw);
+  max-width: calc(300 / 1366 * 100vw);
   box-sizing: border-box;
-  padding: 0 13px;
-  line-height: 55px;
+  padding: 0 calc(13 / 1366 * 100vw);
+  line-height: calc(55 / 1366 * 100vw);
 }
 
 .form-group input::placeholder {
-  font-size: 16px;
+  font-size: calc(16 / 1366 * 100vw);
   color: rgba(0,0,0,0.3);
-  line-height: 55px;
-  position:relative;
-  top:1px;
+  line-height: calc(55 / 1366 * 100vw);
+  position: relative;
+  top: calc(1 / 1366 * 100vw);
 }
 
 .form-group01{
-  margin-bottom: 42px;
+  margin-bottom: calc(42 / 1366 * 100vw);
 }
 .form-group02{
-  margin-bottom: 86px;
+  margin-bottom: calc(86 / 1366 * 100vw);
 }
 
 ::placeholder {
-  font-size: 16px;
+  font-size: calc(16 / 1366 * 100vw);
   box-sizing: border-box;
   color: rgba(0, 0, 0, 0.3);
   opacity: 1;
   position: relative;
-  bottom: 2px;
+  bottom: calc(2 / 1366 * 100vw);
 }
 
 button[type="submit"] {
-  height: 56px;
+  height: calc(56 / 1366 * 100vw);
   border: none;
-  border-radius: 10px;
+  border-radius: calc(10 / 1366 * 100vw);
   background-color: #d49218;
   color: #ffffff;
-  font-size: 16px;
+  font-size: calc(16 / 1366 * 100vw);
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 calc(4 / 1366 * 100vw) calc(6 / 1366 * 100vw) rgba(0, 0, 0, 0.15);
   transition: 0.2s ease-in-out;
   width: 100%;
 }
@@ -100,10 +101,10 @@ button[type="submit"]:active {
 
 .sr-only {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: calc(1 / 1366 * 100vw);
+  height: calc(1 / 1366 * 100vw);
   padding: 0;
-  margin: -1px;
+  margin: calc(-1 / 1366 * 100vw);
   overflow: hidden;
   clip: rect(0 0 0 0);
   border: 0;

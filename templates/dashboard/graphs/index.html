@@ -1,5 +1,145 @@
-{% extends "dashboard/base.html" %}
+{% extends "dashboard/base.html" %} 
 {% block title %}グラフ画面{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/graphs/index.css') }}">
+{% endblock %}
 {% block content %}
-    <p>グラフ画面</p>
+<div class="graph-container">
+    <div class="graph-wrapper">
+
+        <h2 class="graph-title">スクレイピング KPI ダッシュボード</h2>
+    
+        <div class="kpi-area">
+            <div class="kpi-card">
+                <div class="kpi-label">問合せURL取得率</div>
+                <div class="kpi-value">{{ inquiry.data[0] }}</div>
+                <div class="kpi-sub">取得 / 全体</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">電話番号取得率</div>
+                <div class="kpi-value">{{ phone.data[0] }}</div>
+                <div class="kpi-sub">取得 / 全体</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">総抽出件数</div>
+                <div class="kpi-value">{{ daily.data | sum }}</div>
+                <div class="kpi-sub">累計</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Email 取得率</div>
+                <div class="kpi-value">{{ email.data[0] }}</div>
+                <div class="kpi-sub">取得 / 全体</div>
+            </div>
+        </div>
+    
+        <div class="chart-grid">
+            <div class="chart-card">
+                <div class="chart-card-header"><h5>Email 取得割合</h5></div>
+                <div class="chart-card-body">
+                    <canvas id="chartEmailPie"></canvas>
+                </div>
+            </div>
+    
+            <div class="chart-card">
+                <div class="chart-card-header"><h5>問い合わせURL取得割合</h5></div>
+                <div class="chart-card-body">
+                    <canvas id="chartInquiryPie"></canvas>
+                </div>
+            </div>
+    
+            <div class="chart-card">
+                <div class="chart-card-header"><h5>電話番号取得割合</h5></div>
+                <div class="chart-card-body">
+                    <canvas id="chartPhonePie"></canvas>
+                </div>
+            </div>
+    
+            <div class="chart-card">
+                <div class="chart-card-header"><h5>項目取得件数比較</h5></div>
+                <div class="chart-card-body">
+                    <canvas id="chartBar"></canvas>
+                </div>
+            </div>
+        </div>
+    
+        <div class="daily-chart-wrapper" id="daily-scrape-chart">
+            <div class="daily-chart-title">日別スクレイピング件数</div>
+            <canvas id="chartDailyLine"></canvas>
+        </div>
+    
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const email = JSON.parse(`{{ email|tojson|safe }}`);
+    const inquiry = JSON.parse(`{{ inquiry|tojson|safe }}`);
+    const phone = JSON.parse(`{{ phone|tojson|safe }}`);
+    const daily = JSON.parse(`{{ daily|tojson|safe }}`);
+
+    const COLORS = {
+        green: "#4CAF50",
+        red: "#F44336",
+        blue: "#1E8697",
+        gold: "#D49218"
+    };
+
+    function makePie(id, data) {
+        new Chart(document.getElementById(id), {
+            type: "pie",
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.data,
+                    backgroundColor: [COLORS.green, COLORS.red]
+                }]
+            }
+        });
+    }
+
+    makePie("chartEmailPie", email);
+    makePie("chartInquiryPie", inquiry);
+    makePie("chartPhonePie", phone);
+
+    new Chart(document.getElementById('chartBar'), {
+        type: "bar",
+        data: {
+            labels: ["Email", "問い合わせURL", "電話番号"],
+            datasets: [{
+                label: "取得件数",
+                data: [
+                    email.data[0],
+                    inquiry.data[0],
+                    phone.data[0]
+                ],
+                backgroundColor: [COLORS.blue, COLORS.blue, COLORS.blue]
+            }]
+        },
+        options: {
+            plugins: {legend: {display: false}},
+            scales: {y: {beginAtZero: true}}
+        }
+    });
+
+    new Chart(document.getElementById('chartDailyLine'), {
+        type: "line",
+        data: {
+            labels: daily.labels,
+            datasets: [{
+                label: "取得件数",
+                data: daily.data,
+                borderColor: COLORS.blue,
+                backgroundColor: "rgba(30, 134, 151, 0.2)",
+                tension: 0.25,
+                fill: true
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false }},
+            maintainAspectRatio: false,
+        }
+    });
+
+</script>
 {% endblock %}

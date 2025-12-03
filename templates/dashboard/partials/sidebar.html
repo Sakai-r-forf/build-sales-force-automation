@@ -48,6 +48,14 @@
                         <div class="white-border"></div>
 
                         <li>
+                            <div class="flex-justify-center {% if request.endpoint == 'companies_delete.index' %}active{% endif %}">
+                                <a href="{{ url_for('companies_delete.index') }}"><img src="/static/auth/image/delete.svg" /><span>企業データ削除</span></a>
+                            </div>
+                        </li>
+
+                        <div class="white-border"></div>
+
+                        <li>
                             <div class="flex-justify-center {% if request.endpoint == 'graphs.index' %}active{% endif %}">
                                 <a href="{{ url_for('graphs.index') }}"><img src="/static/auth/image/graph.png" /><span>グラフデータ</span></a>
                             </div>
@@ -57,7 +65,7 @@
                             <ul class="graphs-sub">
                                 <li class="graphs-sub-extracted">
                                     <div class="item-line"></div>
-                                    <a href="#">抽出件数</a>
+                                    <a href="/graphs#daily-scrape-chart">抽出件数</a>
                                 </li>
                                 <li class="graphs-sub-contact">
                                     <div class="item-line"></div>

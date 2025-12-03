@@ -1,22 +1,23 @@
 .scraping-container {
-  margin: 60px auto;
+  margin: calc(60 / 1366 * 100vw) auto;
   margin-inline: auto;
   margin-left: 0;
-  width: 918px;
+  width: calc(918 / 1366 * 100vw);
 }
 
 .scraping-wrapper {
   background-color: #f7f7f7;
-  border-radius: 10px;
+  border-radius: calc(10 / 1366 * 100vw);
   border: 1px solid rgba(30, 134, 151, 0.7);
-  padding: 48px 53px;
+  padding: calc(48 / 1366 * 100vw) calc(53 / 1366 * 100vw);
   padding-top: 0;
-  box-shadow: 12px 12px 0 0 #4cc1e0, inset 0 0 0 1px rgba(30, 134, 151, 0.7);
+  box-shadow: calc(12 / 1366 * 100vw) calc(12 / 1366 * 100vw) 0 0 #4cc1e0,
+    inset 0 0 0 1px rgba(30, 134, 151, 0.7);
 }
 
 form {
   display: grid;
-  gap: 10px;
+  gap: calc(10 / 1366 * 100vw);
 }
 
 input,
@@ -24,16 +25,15 @@ textarea {
   width: 100%;
   border: 1px solid rgba(30, 134, 151, 0.7);
   background: #ffffff;
-  border-radius: 10px;
-  padding: 19px 18px 19px 18px;
-  font-size: 13px;
-  text-align: left;
+  border-radius: calc(10 / 1366 * 100vw);
+  padding: calc(19 / 1366 * 100vw) calc(18 / 1366 * 100vw);
+  font-size: calc(13 / 1366 * 100vw);
   box-sizing: border-box;
 }
 
 .faq-link {
   color: #1d1d1d;
-  font-size: 13px;
+  font-size: calc(13 / 1366 * 100vw);
 }
 
 .faq-link a {
@@ -42,82 +42,67 @@ textarea {
 }
 
 label {
-  width: 217px;
-  margin: 50px 0 0 0;
-  padding: 6px 0 6px 18px;
+  width: calc(240 / 1366 * 100vw);
+  margin: calc(50 / 1366 * 100vw) 0 0 0;
+  padding: calc(6 / 1366 * 100vw) 0 calc(6 / 1366 * 100vw) calc(18 / 1366 * 100vw);
   background: #31b7cd;
   color: #f7f7f7;
   font-weight: bold;
-  font-size: 16px;
-  letter-spacing: 0.2px;
+  font-size: calc(16 / 1366 * 100vw);
+  letter-spacing: calc(0.2 / 1366 * 100vw);
+  line-height: 1.2;
 }
 
-.scraping-content{
-  margin-top: 20px;
+.scraping-content {
+  margin-top: calc(20 / 1366 * 100vw);
 }
+
 .flex {
   display: flex;
-  gap: 43px;
+  gap: calc(43 / 1366 * 100vw);
 }
 
 .flex label {
   display: block;
-  width: 217px;
+  width: calc(240 / 1366 * 100vw);
   margin: 0;
-  padding: 6px 0 6px 18px;
+  padding: calc(6 / 1366 * 100vw) 0 calc(6 / 1366 * 100vw) calc(18 / 1366 * 100vw);
   flex-shrink: 0;
   background: #31b7cd;
   color: #f7f7f7;
   font-weight: bold;
-  font-size: 16px;
-  letter-spacing: 0.2px;
+  font-size: calc(16 / 1366 * 100vw);
 }
 
 .flex input {
-  width: 325px;
-  margin: 10px 0;
+  width: 100%;
+  margin: calc(10 / 1366 * 100vw) 0;
 }
 
 button {
-  width: 358px;
-  height: 54px;
-  margin: 50px auto 0;
-  border-radius: 10px;
+  width: calc(358 / 1366 * 100vw);
+  height: calc(54 / 1366 * 100vw);
+  margin: calc(50 / 1366 * 100vw) auto 0;
+  border-radius: calc(10 / 1366 * 100vw);
   border: none;
   background: #d49218;
   color: #ffffff;
-  font-size: 20px;
+  font-size: calc(20 / 1366 * 100vw);
   font-weight: bold;
-  letter-spacing: 0.2px;
+  letter-spacing: calc(0.2 / 1366 * 100vw);
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: normal;
   padding: 0;
 }
 
 .hint {
   text-align: center;
   color: #6b7b86;
-  font-size: 12px;
+  font-size: calc(12 / 1366 * 100vw);
 }
 
-.flex-2{
-  width:50%;
-}
-label{
-  width:240px;
-  box-sizing:border-box;
-  height: 30px;
-  line-height: 1.2;
-}
-.flex label {
-  width:240px;
-  box-sizing:border-box;
-  margin-top:50px;
-}
-.flex input {
-    width: 100%;
-    margin: 10px 0;
+.flex-2 {
+  width: 50%;
 }

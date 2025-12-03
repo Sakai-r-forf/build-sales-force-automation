@@ -4,7 +4,8 @@
     rel="stylesheet"
     href="{{ url_for('static', filename='css/dashboard/companies/index.css') }}"
 />
-{% endblock %} {% block content %}
+{% endblock %}
+{% block content %}
 
 <div class="companies-page">
     <div class="search-container">
@@ -38,7 +39,7 @@
                     </colgroup>
                     <thead>
                         <tr>
-                        <th class="mailStatus">メール</br>送付有無</th>
+                        <th class="mailStatus">メール送付有無</th>
                         <th class="id">ID</th>
                         <th class="companyName">企業名</th>
                         <th class="companySite">企業HP</th>
@@ -119,9 +120,6 @@
         </div>
     </div>
 </div>
-
-<!-- TODO: 仮グラフをJSで作成済み。現行の機能に加え以下追加実装もPythonで再実装をお願いいたします。 -->
-
 <!-- 現行実装 -->
 <!-- 1. 表全体: 表内の値は配列で表示 -->
 
