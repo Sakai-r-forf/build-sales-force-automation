@@ -7,6 +7,9 @@
 #管理画面ログイン
 メールアドレス：testadmin@example.com
 パスワード：testpass
+以下に変更
+email = abe@build-build.co.jp
+password = buildpassword1201
 
 #dashboard（/templates/dashboard）は base.html（/templates/dashboard/base.html）をベースにして作成しています。
 
