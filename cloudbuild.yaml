@@ -1,0 +1,24 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:${SHORT_SHA}
+      - -t
+      - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:latest
+      - -f
+      - Dockerfile
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:${SHORT_SHA}
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - asia-northeast1-docker.pkg.dev/build-sales-force-automation/scraper-repo/scraper-app:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -1,0 +1,110 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}企業削除{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/companies_delete/index.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="companies-delete-page">
+    <h2 class="delete-title">企業データ削除</h2>
+    <div class="cd-search-container">
+        <div class="cd-search-box">
+            <input
+                type="text"
+                id="search-input"
+                class="cd-search-input"
+                placeholder="企業名で検索"
+            />
+            <button id="search-btn" class="cd-search-btn">
+                <img src="/static/auth/image/favicon/favicon.png" alt="検索" />
+            </button>
+        </div>
+    </div>    
+    <table class="delete-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>企業名</th>
+                <th>Email</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for c in companies %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td class="td-company-name">{{ c.company_name }}</td>
+                <td>{{ c.email }}</td>
+                <td>
+                    <button class="cd-delete-btn"
+                        data-id="{{ c.id }}"
+                        data-name="{{ c.company_name }}">
+                        削除
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<div id="deleteModal" class="cd-modal">
+    <div class="cd-modal-inner">
+        <p id="modal-text"></p>
+        <form method="POST" id="deleteForm">
+            <button type="submit" class="cd-btn-danger">削除する</button>
+            <button type="button" class="cd-btn-cancel" id="cancelModal">キャンセル</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("deleteModal");
+    const modalText = document.getElementById("modal-text");
+    const deleteForm = document.getElementById("deleteForm");
+    const cancelBtn = document.getElementById("cancelModal");
+
+    document.querySelectorAll(".cd-delete-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const name = btn.dataset.name;
+            const id = btn.dataset.id;
+            modalText.textContent = `本当に「${name}」を削除しますか？`;
+            deleteForm.action = `/companies_delete/${id}/delete`;
+            modal.classList.add("open");
+        });
+    });
+
+    cancelBtn.addEventListener("click", () => modal.classList.remove("open"));
+
+    modal.addEventListener("click", e => {
+        if(e.target === modal) modal.classList.remove("open");
+    });
+});
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const input = document.getElementById("search-input");
+        const rows  = document.querySelectorAll(".delete-table tbody tr");
+    
+        input.addEventListener("input", () => {
+            const keyword = input.value.trim().toLowerCase();
+    
+            rows.forEach(row => {
+                const cellsText = row.innerText.toLowerCase();
+    
+                if (cellsText.includes(keyword)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    });
+</script>    
+{% endblock %}

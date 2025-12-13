@@ -10,12 +10,13 @@ from google.cloud import storage
 
 from models import init_db, db
 from models.user import User
+from models.seed_users import seed_initial_users
+
 from views.auth import auth_bp
 from views.scraping import scraping_bp
 from views.companies import companies_bp
 from views.graphs import graphs_bp
 from views.faq import faq_bp
-from models.seed_users import seed_initial_users
 
 app = Flask(__name__)
 
@@ -85,6 +86,13 @@ app.register_blueprint(scraping_bp, url_prefix="/scraping")
 app.register_blueprint(companies_bp, url_prefix="/companies")
 app.register_blueprint(graphs_bp, url_prefix="/graphs")
 app.register_blueprint(faq_bp, url_prefix="/faq")
+app.register_blueprint(companies_delete_bp, url_prefix="/companies_delete")
+
+@app.route("/")
+def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login"))
+    return redirect(url_for("companies.index"))
 
 @app.route("/")
 def index():
