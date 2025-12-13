@@ -1,0 +1,15 @@
+# env / secrets
+.env
+.env.*
+
+# python
+__pycache__/
+*.pyc
+
+# local files
+instance/
+*.db
+*.csv
+
+# OS
+.DS_Store

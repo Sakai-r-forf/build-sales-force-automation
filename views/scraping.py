@@ -1,6 +1,12 @@
-import os, json
+import os
+import json
+from datetime import datetime, timezone
+
 from flask import Blueprint, render_template, request, send_file
 from flask_login import login_required
+
+from google.cloud import storage
+
 from services.scraper import crawl_and_export, get_stats
 
 scraping_bp = Blueprint(
@@ -9,10 +15,42 @@ scraping_bp = Blueprint(
     template_folder="../templates/dashboard/scraping",
 )
 
+BUCKET_NAME = os.getenv("GCS_BUCKET", "build-scraping-bucket")
+_storage_client = None
+
+def get_storage_client() -> storage.Client:
+    global _storage_client
+    if _storage_client is None:
+        _storage_client = storage.Client()
+    return _storage_client
+
+def upload_file_to_gcs(local_path: str, prefix: str = "exports") -> str:
+    """
+    ローカルのCSVなどをGCSへアップロードして永続化する。
+    return: GCS object path (例: exports/20251213/170945_companies.csv)
+    """
+    client = get_storage_client()
+    bucket = client.bucket(BUCKET_NAME)
+
+    now = datetime.now(timezone.utc)
+    date_part = now.strftime("%Y%m%d")
+    time_part = now.strftime("%H%M%S")
+
+    filename = os.path.basename(local_path)
+    object_name = f"{prefix}/{date_part}/{time_part}_{filename}"
+
+    blob = bucket.blob(object_name)
+
+    blob.upload_from_filename(local_path, content_type="text/csv; charset=utf-8")
+
+    return object_name
+
+
 @scraping_bp.get("/")
 @login_required
 def index():
     return render_template("index.html")
+
 
 @scraping_bp.post("/crawl")
 @login_required
@@ -37,9 +75,21 @@ def crawl():
         jp_keywords=jp_keywords,
     )
 
-    resp = send_file(csv_path, as_attachment=True, download_name=os.path.basename(csv_path))
+    gcs_object = upload_file_to_gcs(csv_path, prefix="companies_csv")
+
+    print(f"[GCS] uploaded: gs://{BUCKET_NAME}/{gcs_object}")
+
+    resp = send_file(
+        csv_path,
+        as_attachment=True,
+        download_name=os.path.basename(csv_path)
+    )
+
     stats = get_stats()
     resp.headers["X-Request-Count"] = str(stats.get("total", 0))
     resp.headers["X-Requests-By-Domain"] = json.dumps(stats.get("by_domain", {}), ensure_ascii=False)
     resp.headers["X-Crawl-Duration-Seconds"] = str(stats.get("duration_seconds", ""))
+
+    resp.headers["X-GCS-Object"] = gcs_object
+
     return resp
