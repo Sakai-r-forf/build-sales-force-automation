@@ -1,110 +1,107 @@
-import os
 import json
-import uuid
-from datetime import datetime, timezone
+import os
+import secrets
+from pathlib import Path
 
-from flask import Flask, redirect, url_for
+from flask import Flask, abort, jsonify, redirect, request, session, url_for
 from flask_login import LoginManager, current_user
+from werkzeug.security import generate_password_hash
 
-from google.cloud import storage
+from services.store import StateStore
 
-from models import init_db, db
-from models.user import User
-from models.seed_users import seed_initial_users
 
-from views.auth import auth_bp
-from views.scraping import scraping_bp
-from views.companies import companies_bp
-from views.graphs import graphs_bp
-from views.faq import faq_bp
-
-app = Flask(__name__)
-
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "CHANGE_ME")
-app.config.setdefault(
-    "SQLALCHEMY_DATABASE_URI",
-    os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///app.db")
-)
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["JSON_AS_ASCII"] = False
-
-init_db(app)
-
-from models.seed_users import seed_initial_users
-with app.app_context():
-    seed_initial_users()
-
-# =========================
-# Cloud Storage 永続保存
-# =========================
-BUCKET_NAME = os.getenv("GCS_BUCKET", "build-scraping-bucket")
-
-_storage_client = None  # ★遅延初期化（ローカル起動で落ちにくくする）
-
-def get_storage_client() -> storage.Client:
-    global _storage_client
-    if _storage_client is None:
-        _storage_client = storage.Client()
-    return _storage_client
-
-def save_to_gcs_json(data: dict, prefix: str = "companies") -> str:
-    """
-    data: 保存したいdict（スクレイプ結果1件でも、まとめでもOK）
-    prefix: 保存先の論理フォルダ名
-    return: GCSのオブジェクトパス（例 companies/20251213/170945-xxxx.json）
-    """
-    client = get_storage_client()
-    bucket = client.bucket(BUCKET_NAME)
-
-    now = datetime.now(timezone.utc)
-    date_part = now.strftime("%Y%m%d")
-    time_part = now.strftime("%H%M%S")
-
-    object_name = f"{prefix}/{date_part}/{time_part}-{uuid.uuid4().hex}.json"
-
-    blob = bucket.blob(object_name)
-    blob.upload_from_string(
-        json.dumps(data, ensure_ascii=False),
-        content_type="application/json; charset=utf-8"
+def create_app(config=None):
+    app = Flask(__name__)
+    app.config.update(
+        SECRET_KEY=os.getenv("SECRET_KEY", "local-development-only"),
+        GCS_BUCKET=os.getenv("GCS_BUCKET", ""),
+        STATE_PATH=os.getenv("STATE_PATH", str(Path(app.instance_path) / "state.json")),
+        STATE_OBJECT=os.getenv("STATE_OBJECT", "app/state-v1.json"),
+        MAX_CONTENT_LENGTH=256 * 1024,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_SECURE=bool(os.getenv("K_SERVICE")),
+        ALLOW_LOOPBACK=False,
+        CRAWL_TIME_BUDGET=220,
     )
+    if config:
+        app.config.update(config)
+    if os.getenv("K_SERVICE") and (not app.config["GCS_BUCKET"] or app.config["SECRET_KEY"] == "local-development-only"):
+        raise RuntimeError("Cloud Run requires GCS_BUCKET and SECRET_KEY.")
+    app.extensions["state_store"] = StateStore(app.config["GCS_BUCKET"], app.config["STATE_PATH"], app.config["STATE_OBJECT"])
+    users_json = os.getenv("INITIAL_USERS_JSON")
+    if users_json:
+        users = json.loads(users_json)
+        def seed(state):
+            for user in users:
+                email = user["email"].strip().lower()
+                state["users"].setdefault(email, {"id": email, "email": email, "password_hash": user.get("password_hash") or generate_password_hash(user["password"])})
+        app.extensions["state_store"].mutate(seed)
 
-    return object_name
+    from views.auth import auth_bp, Account
+    from views.scraping import scraping_bp
+    from views.companies import companies_bp
+    from views.graphs import graphs_bp
+    from views.faq import faq_bp
+    from views.companies_delete import companies_delete_bp
+    from views.deliveries import deliveries_bp
+    manager = LoginManager(app)
+    manager.login_view = "auth.login"
+
+    @manager.user_loader
+    def load_user(user_id):
+        data = app.extensions["state_store"].read()["users"].get(user_id)
+        return Account(data) if data else None
+
+    @manager.unauthorized_handler
+    def unauthorized():
+        if request.is_json or request.headers.get("X-Requested-With"):
+            return jsonify(error="ログインし直してください。"), 401
+        return redirect(url_for("auth.login", next=request.path))
+
+    @app.context_processor
+    def csrf_context():
+        if "csrf_token" not in session:
+            session["csrf_token"] = secrets.token_urlsafe(32)
+        return {"csrf_token": session["csrf_token"]}
+
+    @app.before_request
+    def csrf_check():
+        if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+            token = request.headers.get("X-CSRF-Token") or request.form.get("csrf_token", "")
+            if not token or not secrets.compare_digest(token, session.get("csrf_token", "")):
+                if request.is_json or request.headers.get("X-Requested-With"):
+                    return jsonify(error="画面を再読み込みして操作し直してください。"), 400
+                abort(400, description="画面を再読み込みして操作し直してください。")
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(scraping_bp, url_prefix="/scraping")
+    app.register_blueprint(companies_bp, url_prefix="/companies")
+    app.register_blueprint(graphs_bp, url_prefix="/graphs")
+    app.register_blueprint(faq_bp, url_prefix="/faq")
+    app.register_blueprint(companies_delete_bp, url_prefix="/companies_delete")
+    app.register_blueprint(deliveries_bp, url_prefix="/deliveries")
+
+    @app.get("/")
+    def index():
+        return redirect(url_for("companies.index" if current_user.is_authenticated else "auth.login"))
+
+    @app.get("/healthz")
+    def healthz():
+        return {"status": "ok"}
+
+    @app.get("/readyz")
+    def readyz():
+        try:
+            app.extensions["state_store"].read()
+            return {"status": "ok", "storage": "gcs" if app.config["GCS_BUCKET"] else "local"}
+        except Exception:
+            app.logger.exception("Persistent storage unavailable")
+            return {"status": "unavailable"}, 503
+
+    return app
 
 
-# =========================
-# Login / Blueprints
-# =========================
-login_manager = LoginManager(app)
-login_manager.login_view = "auth.login"
-
-@login_manager.user_loader
-def load_user(user_id: str):
-    return db.session.get(User, int(user_id))
-
-app.register_blueprint(auth_bp)
-app.register_blueprint(scraping_bp, url_prefix="/scraping")
-app.register_blueprint(companies_bp, url_prefix="/companies")
-app.register_blueprint(graphs_bp, url_prefix="/graphs")
-app.register_blueprint(faq_bp, url_prefix="/faq")
-app.register_blueprint(companies_delete_bp, url_prefix="/companies_delete")
-
-@app.route("/")
-def index():
-    if not current_user.is_authenticated:
-        return redirect(url_for("auth.login"))
-    return redirect(url_for("companies.index"))
-
-@app.route("/")
-def index():
-    if not current_user.is_authenticated:
-        return redirect(url_for("auth.login"))
-    return redirect(url_for("companies.index"))
-
-@app.get("/healthz")
-def healthz():
-    return {"status": "ok"}
-
-
+app = create_app()
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7700))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "7700")))

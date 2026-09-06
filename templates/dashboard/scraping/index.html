@@ -10,7 +10,8 @@
 <div class="scraping-container">
   <div class="scraping-wrapper">
     <div class="scraping-content">
-      <form method="POST" action="{{ url_for('scraping.crawl') }}">
+      <form id="crawl-form" method="POST" action="{{ url_for('scraping.crawl') }}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <label>企業掲載サイトのURL</label>
         <input
           required
@@ -89,12 +90,13 @@
         </p>
 
         <button type="submit">CSVを生成</button>
-        <p class="hint">※ CSV生成の目安は5分前後です</p>
+        <p class="hint" id="crawl-status" role="status">※ 取得した企業情報は保存されます。CSV生成の目安は5分前後です</p>
       </form>
     </div>
   </div>
 </div>
 
+<script src="{{ url_for('static', filename='js/scraping.js') }}" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const textarea = document.getElementById("jp_keywords");

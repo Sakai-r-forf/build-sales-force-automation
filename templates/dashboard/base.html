@@ -2,6 +2,7 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8" />
+        <meta name="csrf-token" content="{{ csrf_token }}">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
@@ -25,11 +26,21 @@
                 </div>
                 <div class="dashboard_flex_right">
                     <main class="dashboard_flex_right_area">
+                    {% with messages = get_flashed_messages() %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endwith %}
                     {% block content %}{% endblock %}
                     </main>
                 </div>
                 </div>
             </div>
         </div>
+    <script>
+        document.querySelectorAll('[data-logout]').forEach(link => link.addEventListener('click', event => {
+            event.preventDefault();
+            const form = document.createElement('form'); form.method = 'POST'; form.action = '/logout';
+            const token = document.createElement('input'); token.type = 'hidden'; token.name = 'csrf_token';
+            token.value = document.querySelector('meta[name="csrf-token"]').content;
+            form.appendChild(token); document.body.appendChild(form); form.submit();
+        }));
+        </script>
     </body>
 </html>

@@ -1,53 +1,37 @@
-from models.company import Company
-from sqlalchemy import func
-from models import db
+from collections import Counter
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from services.store import companies
+
 
 class GraphData:
+    @staticmethod
+    def distribution(field, label):
+        rows = companies()
+        yes = sum(bool(c.get(field)) for c in rows)
+        return {"labels": [label+"あり", label+"なし"], "data": [yes, len(rows)-yes]}
 
     @staticmethod
     def email_distribution():
-        total = db.session.query(func.count(Company.id)).scalar()
-        email_yes = db.session.query(func.count(Company.id)).filter(
-            Company.email.isnot(None),
-            Company.email != ""
-        ).scalar()
-        return {
-            "labels": ["Emailあり", "Emailなし"],
-            "data": [email_yes, total - email_yes]
-        }
+        return GraphData.distribution("email", "Email")
 
     @staticmethod
     def inquiry_distribution():
-        total = db.session.query(func.count(Company.id)).scalar()
-        inquiry_yes = db.session.query(func.count(Company.id)).filter(
-            Company.inquiry_url.isnot(None),
-            Company.inquiry_url != ""
-        ).scalar()
-        return {
-            "labels": ["問い合わせURLあり", "問い合わせURLなし"],
-            "data": [inquiry_yes, total - inquiry_yes]
-        }
+        return GraphData.distribution("inquiry_url", "問い合わせURL")
 
     @staticmethod
     def phone_distribution():
-        total = db.session.query(func.count(Company.id)).scalar()
-        phone_yes = db.session.query(func.count(Company.id)).filter(
-            Company.phone.isnot(None),
-            Company.phone != ""
-        ).scalar()
-        return {
-            "labels": ["電話あり", "電話なし"],
-            "data": [phone_yes, total - phone_yes]
-        }
+        return GraphData.distribution("phone", "電話")
 
     @staticmethod
     def daily_scrape_counts():
-        rows = db.session.query(
-            func.date(Company.created_at),
-            func.count(Company.id)
-        ).group_by(func.date(Company.created_at)).all()
-
-        labels = [str(r[0]) for r in rows]
-        data = [r[1] for r in rows]
-
-        return {"labels": labels, "data": data}
+        def local_day(value):
+            try:
+                date = datetime.fromisoformat(value.replace("/", "-"))
+                if date.tzinfo:
+                    date = date.astimezone(ZoneInfo("Asia/Tokyo"))
+                return date.strftime("%Y-%m-%d")
+            except ValueError:
+                return value[:10]
+        counts = Counter(local_day(c.get("created_at", "")) for c in companies())
+        return {"labels": sorted(counts), "data": [counts[k] for k in sorted(counts)]}

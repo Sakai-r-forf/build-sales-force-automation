@@ -15,6 +15,7 @@
       <div class="login-wrapper">
         <div class="login-content">
           <form action="/login" method="post">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div class="form-group form-group01">
               <label for="email" class="sr-only">メールアドレス</label>
               <input

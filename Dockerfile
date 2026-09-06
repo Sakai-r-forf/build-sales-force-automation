@@ -1,22 +1,14 @@
-FROM python:3.12-slim
+FROM python:3.12-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
+    PLAYWRIGHT_BROWSERS_PATH=/opt/playwright \
     TZ=Asia/Tokyo
-
 WORKDIR /app
-
 COPY requirements.txt ./
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-       build-essential libxml2-dev libxslt1-dev \
-    && pip install -r requirements.txt \
-    && apt-get purge -y build-essential \
-    && apt-get autoremove -y \
+RUN pip install -r requirements.txt \
+    && python -m playwright install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/*
-
 COPY . .
-
-EXPOSE 7700
-
-CMD ["sh", "-c", "gunicorn -b 0.0.0.0:${PORT:-7700} app:app --workers 2 --threads 4 --timeout 120"]
+EXPOSE 8080
+CMD ["sh", "-c", "exec gunicorn -b 0.0.0.0:${PORT:-8080} app:app --workers 1 --threads 4 --timeout 300 --access-logfile - --error-logfile -"]
