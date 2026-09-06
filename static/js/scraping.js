@@ -7,7 +7,7 @@
    if(!response.ok){const result=await response.json();throw new Error(result.error||'処理に失敗しました。');}
    const blob=await response.blob(),url=URL.createObjectURL(blob),link=document.createElement('a');
    link.href=url;link.download='companies.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-   status.textContent=`${response.headers.get('X-Saved-Count')}社を保存しました。企業情報一覧で送信対象を選択できます。`+(response.headers.get('X-Crawl-Partial')==='true'?'上限に達したため、取得できた分を保存しました。':'');
+   status.textContent=`${response.headers.get('X-Saved-Count')}社を保存しました。企業情報一覧で送信対象を選択できます。`+(response.headers.get('X-Crawl-Partial')==='true'?'時間・件数の上限やサイト側の制限により、一部のみ取得・保存しました。':'');
   }catch(error){status.textContent=error.message;}finally{button.disabled=false;}
  });
 })();

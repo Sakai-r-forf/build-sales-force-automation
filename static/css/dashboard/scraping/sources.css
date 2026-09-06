@@ -1,0 +1,16 @@
+/* Match existing form controls; keep the surrounding design unchanged. */
+#saved-source {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(30, 134, 151, .7);
+  background: #fff;
+  border-radius: calc(10 / 1366 * 100vw);
+  padding: calc(19 / 1366 * 100vw) calc(18 / 1366 * 100vw);
+  font-size: calc(13 / 1366 * 100vw);
+  box-sizing: border-box;
+}
+.source-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.source-actions button { width: auto; height: auto; margin: 8px 0 0; padding: 10px 18px; font-size: 14px; }
+#source-delete { background: #6b7b86; }
+.source-actions button:disabled { opacity: .45; cursor: not-allowed; }
+#source-status { overflow-wrap: anywhere; }
