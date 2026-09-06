@@ -1,95 +1,40 @@
 import os
-import json
-from datetime import datetime, timezone
-
-from flask import Blueprint, render_template, request, send_file
+from flask import Blueprint, current_app, jsonify, render_template, request, send_file
 from flask_login import login_required
-
-from google.cloud import storage
-
 from services.scraper import crawl_and_export, get_stats
 
-scraping_bp = Blueprint(
-    "scraping",
-    __name__,
-    template_folder="../templates/dashboard/scraping",
-)
-
-BUCKET_NAME = os.getenv("GCS_BUCKET", "build-scraping-bucket")
-_storage_client = None
-
-def get_storage_client() -> storage.Client:
-    global _storage_client
-    if _storage_client is None:
-        _storage_client = storage.Client()
-    return _storage_client
-
-def upload_file_to_gcs(local_path: str, prefix: str = "exports") -> str:
-    """
-    ローカルのCSVなどをGCSへアップロードして永続化する。
-    return: GCS object path (例: exports/20251213/170945_companies.csv)
-    """
-    client = get_storage_client()
-    bucket = client.bucket(BUCKET_NAME)
-
-    now = datetime.now(timezone.utc)
-    date_part = now.strftime("%Y%m%d")
-    time_part = now.strftime("%H%M%S")
-
-    filename = os.path.basename(local_path)
-    object_name = f"{prefix}/{date_part}/{time_part}_{filename}"
-
-    blob = bucket.blob(object_name)
-
-    blob.upload_from_filename(local_path, content_type="text/csv; charset=utf-8")
-
-    return object_name
+scraping_bp = Blueprint("scraping", __name__)
 
 
 @scraping_bp.get("/")
 @login_required
 def index():
-    return render_template("index.html")
+    return render_template("dashboard/scraping/index.html")
 
 
 @scraping_bp.post("/crawl")
 @login_required
 def crawl():
-    seed_url = (request.form.get("seed_url") or "").strip()
-    allowed_domain = (request.form.get("allowed_domain") or "").strip() or None
-    limit = int(request.form.get("limit") or 100)
-    max_pages = int(request.form.get("max_pages") or 100)
-    jp_keywords_raw = (request.form.get("jp_keywords") or "").strip()
-    jp_keywords = [x.strip() for x in jp_keywords_raw.splitlines() if x.strip()] or [
-        "株式会社", "有限会社", "建設", "工務店", "お問い合わせ", "会社概要",
-    ]
-
-    if not seed_url:
-        return "seed_url は必須です", 400
-
-    csv_path = crawl_and_export(
-        seed_url=seed_url,
-        allowed_domain=allowed_domain,
-        limit=limit,
-        max_pages=max_pages,
-        jp_keywords=jp_keywords,
-    )
-
-    gcs_object = upload_file_to_gcs(csv_path, prefix="companies_csv")
-
-    print(f"[GCS] uploaded: gs://{BUCKET_NAME}/{gcs_object}")
-
-    resp = send_file(
-        csv_path,
-        as_attachment=True,
-        download_name=os.path.basename(csv_path)
-    )
-
+    seed_url = request.form.get("seed_url", "").strip()
+    try:
+        limit = int(request.form.get("limit") or 100)
+        max_pages = int(request.form.get("max_pages") or 100)
+        if not seed_url or not 1 <= limit <= 500 or not 1 <= max_pages <= 2000:
+            raise ValueError("URL、最大取得件数（1〜500）、最大取得ページ数（1〜2000）を確認してください。")
+        csv_path = crawl_and_export(seed_url, request.form.get("allowed_domain", "").strip(), limit, max_pages, request.form.get("jp_keywords", ""))
+    except ValueError as error:
+        return jsonify(error=str(error)), 400
+    except Exception:
+        current_app.logger.exception("Company crawl/save failed")
+        return jsonify(error="取得または保存に失敗しました。すでに保存できた企業は企業情報一覧で確認できます。時間をおいて再度お試しください。"), 503
     stats = get_stats()
-    resp.headers["X-Request-Count"] = str(stats.get("total", 0))
-    resp.headers["X-Requests-By-Domain"] = json.dumps(stats.get("by_domain", {}), ensure_ascii=False)
-    resp.headers["X-Crawl-Duration-Seconds"] = str(stats.get("duration_seconds", ""))
-
-    resp.headers["X-GCS-Object"] = gcs_object
-
-    return resp
+    if not stats["total"]:
+        os.unlink(csv_path)
+        return jsonify(error="該当企業を取得できませんでした。URL・キーワード・対象サイトへの接続可否を確認してください。削除済み企業は再取得されません。", stats=stats), 422
+    response = send_file(csv_path, as_attachment=True, download_name=os.path.basename(csv_path))
+    response.headers["X-Saved-Count"] = str(stats["total"])
+    response.headers["X-Crawl-Partial"] = str(stats["partial"]).lower()
+    response.headers["X-Crawl-Duration-Seconds"] = str(stats["duration_seconds"])
+    # send_file has already opened the file; unlink prevents accumulating exports.
+    os.unlink(csv_path)
+    return response

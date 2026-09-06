@@ -1,23 +1,64 @@
-# construction_scraper_project 2
+# ビルド 営業支援ツール
 
-# test build from Cloud Build
+企業掲載サイトから企業情報を抽出し、選択した企業のお問い合わせフォームへ営業文を送信する Flask アプリです。既存の画面・CSS・画像を維持し、送信に必要な操作のみを追加しています。
 
-<!-- # test build from Cloud Build：Cloud Build トリガー動作確認用 -->
+## 利用手順
 
-#管理画面ログイン
-メールアドレス：testadmin@example.com
-パスワード：testpass
-以下に変更
-email = abe@build-build.co.jp
-password = buildpassword1201
+1. ログインし「企業情報抽出」で掲載サイトのURLとキーワード（カンマ・改行区切り）を入力します。
+2. 「CSVを生成」で取得済みの企業を保存し、CSVをダウンロードします。企業情報一覧で結果を確認できます。
+3. 「企業情報一覧」で送信対象を選び「営業メールの送信設定」を開きます。
+4. 送信者情報・返信先・件名・本文を入力し「下書きを保存」します。本文の `{company_name}` は各社名に置換されます。
+5. 対象企業と本文を確認して「選択した企業へ送信する」を押します。ブラウザーを開いたまま、1社ずつ順に処理します。停止ボタンは処理中の1社が終わると停止します。
 
-#dashboard（/templates/dashboard）は base.html（/templates/dashboard/base.html）をベースにして作成しています。
+`✓ 送信済` はフォームの完了表示を確認した状態です。相手のメールボックスへの到達や開封を保証するものではありません。CAPTCHA、未知の必須入力、対応できない画面は手動対応になります。`要確認` は送信結果が不明か処理中のため自動再送を停止した状態です。お問い合わせURLを開いて確認してください。企業削除は除外記録を保持するため、その後の再取得・自動送信も防ぎます。
 
-{% block content %}{% endblock %}
-の中にコンテンツが入ります。
+## 永続化と運用
 
-#各ページの CSS 適応方法
-/templates/dashboard/scraping/index.html を参考にしてください。
-{% block head %}
-{% endblock %}
-の中に CSS ファイルを挿入します。
+本番は Cloud Run (`scraper-app`, `asia-northeast1`) と既存の Cloud Storage バケットを使用します。GCE/SSHは使用しません。
+
+- `GCS_BUCKET=build-scraping-bucket`
+- `STATE_OBJECT=app/state-v1.json`（既定値）
+- `SECRET_KEY` は環境変数でランダム値を指定します。
+- ユーザーのパスワードハッシュ、企業、除外情報、送信下書き、送信試行・結果を上記の非公開オブジェクトに保存します。
+- GCSの世代番号に対する条件付き更新により、複数インスタンスからの変更競合を検知・再試行します。送信前に記録を永続化し、送信済み・処理中・結果不明の企業は再送しません。
+- JSON全体を読み書きする方式です。現在の小規模運用向けで、数万件以上や高頻度の同時利用へ拡大する際は、DBへの移行を検討してください。
+- コンテナのSQLiteは本番データとして使用しません。初回データ投入は既存ユーザー・CSVを確認のうえ実施します。
+- `/healthz` は起動確認、`/readyz` は保存先への読み取り確認です。
+- Cloud Run の推奨設定: メモリー1GiB以上、タイムアウト360秒、同時リクエスト数4以下。1フォームの処理は通常数十秒です。スクレイピングは約220秒で取得済み分を返します。
+- 各サイトのHTMLや入力条件の違いにより、自動送信できない場合があります。送信完了が判別できないフォームを成功扱いにはしません。
+
+## ローカル開発
+
+Python 3.12以降を使用します。
+
+```sh
+python -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt pytest
+python -m playwright install --with-deps chromium
+python manage.py user admin@example.com
+python app.py
+```
+
+既定では `instance/state.json` に保存します。ファイルロックとアトミックな置換を使います。
+
+```sh
+docker compose up --build -d
+docker compose exec app python manage.py user admin@example.com
+```
+
+Docker利用時は `http://localhost:9020` を開きます。データは `app_data` ボリュームに保存されます。`docker compose down -v` はデータを消去するため使用しないでください。
+
+## テスト
+
+```sh
+python -m pytest -q
+```
+
+ローカルのダミーフォームへの実ブラウザー送信を検証します。外部企業への送信は行いません。通常フォーム、確認画面、CAPTCHA、必須項目不足、保存障害、重複送信抑止、再起動後の永続性、競合更新を含みます。
+
+## 反映
+
+GitHubのPRでテストを通してマージ後、マージコミットからDockerイメージをビルドします。まずCloud Runの新リビジョンへトラフィックを流さずデプロイし、ログイン・保存・送信機能を検証したうえで100%を切り替えます。
+
+既存リビジョンへのトラフィック切替でアプリのロールバックが可能です。ただし旧版は永続ストアを読みません。ロールバックしてもGCSのデータは保持し、アプリとデータを別々に扱ってください。反映前にGCSオブジェクトとCloud Run設定をバックアップします。

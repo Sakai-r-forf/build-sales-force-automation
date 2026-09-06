@@ -1,55 +1,17 @@
 services:
   app:
     build: .
-    container_name: constr_scraper_app
     ports:
-      - "9020:7900"
-
+      - "127.0.0.1:9020:8080"
+    env_file:
+      - path: .env
+        required: false
     environment:
-      - TZ=Asia/Tokyo
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=1
-      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://appuser:apppass@db/scraper_db?charset=utf8mb4
-      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcs-local.json
-
-    volumes:
-      - ./:/app
-      - ~/keys/gcs-local.json:/secrets/gcs-local.json:ro
-
-    restart: unless-stopped
-    depends_on:
-      - db
-    command: >
-      gunicorn -b 0.0.0.0:7900 app:app --workers 2 --threads 4 --timeout 120
-
-  db:
-    image: mysql:8.0
-    container_name: constr_mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: scraper_db
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppass
+      STATE_PATH: /data/state.json
+      PORT: 8080
       TZ: Asia/Tokyo
     volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3307:3306"
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: constr_phpmyadmin
-    restart: always
-    depends_on:
-      - db
-    environment:
-      PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: root
-      PMA_ARBITRARY: 1
-    ports:
-      - "8011:80"
-
+      - app_data:/data
+    restart: unless-stopped
 volumes:
-  db_data:
+  app_data:

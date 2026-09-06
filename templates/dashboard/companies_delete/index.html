@@ -56,6 +56,7 @@
     <div class="cd-modal-inner">
         <p id="modal-text"></p>
         <form method="POST" id="deleteForm">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <button type="submit" class="cd-btn-danger">削除する</button>
             <button type="button" class="cd-btn-cancel" id="cancelModal">キャンセル</button>
         </form>

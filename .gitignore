@@ -1,15 +1,11 @@
-# env / secrets
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
 .env
 .env.*
-
-# python
-__pycache__/
-*.pyc
-
-# local files
+!.env.example
 instance/
+local-data/
 *.db
 *.csv
-
-# OS
-.DS_Store

@@ -1,24 +1,31 @@
+import math
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from types import SimpleNamespace
 from flask import Blueprint, render_template, request
 from flask_login import login_required
-from models.company import Company
+from services.store import companies
 
-companies_bp = Blueprint("companies", __name__, template_folder="../templates/dashboard/companies")
+companies_bp = Blueprint("companies", __name__)
 
-@companies_bp.route("/", methods=["GET"])
+
+def display_record(record):
+    record = dict(record)
+    try:
+        record["created_at"] = datetime.fromisoformat(record["created_at"].replace("/", "-"))
+        if record["created_at"].tzinfo:
+            record["created_at"] = record["created_at"].astimezone(ZoneInfo("Asia/Tokyo"))
+    except (ValueError, KeyError):
+        record["created_at"] = None
+    return SimpleNamespace(**record)
+
+
+@companies_bp.get("/")
 @login_required
 def index():
-    search = request.args.get("search", "")
-    page = request.args.get("page", 1, type=int)
-    per_page = 100
-
-    query = Company.query
-    if search:
-        query = query.filter(Company.company_name.like(f"%{search}%"))
-
-    pagination = query.order_by(Company.id.desc()).paginate(page=page, per_page=per_page)
-    
-    return render_template(
-        "dashboard/companies/index.html",
-        companies=pagination.items,
-        pagination=pagination
-    )
+    search = request.args.get("search", "").strip()
+    all_rows = companies(search)
+    pages = max(1, math.ceil(len(all_rows) / 100))
+    page = min(max(1, request.args.get("page", 1, type=int)), pages)
+    pagination = SimpleNamespace(page=page, pages=pages, has_prev=page>1, has_next=page<pages, prev_num=page-1, next_num=page+1)
+    return render_template("dashboard/companies/index.html", companies=[display_record(c) for c in all_rows[(page-1)*100:page*100]], pagination=pagination, search=search)

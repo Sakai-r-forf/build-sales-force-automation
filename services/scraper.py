@@ -1,182 +1,164 @@
-import csv, os, time, requests, re
+import csv
+import os
+import re
+import tempfile
+import time
+from collections import deque
+from contextvars import ContextVar
 from urllib.parse import urlparse, urljoin
+
+import requests
 from bs4 import BeautifulSoup
+from flask import current_app
+from services.network import validate_public_url
+from services.store import canonical_url, upsert_company
 
-from models import db
-from models.company import Company
+_stats = ContextVar("crawl_stats", default=None)
 
-_stats = {}
+
+def parse_keywords(value):
+    if isinstance(value, list):
+        value = ",".join(value)
+    return [k.strip() for k in re.split(r"[,、\r\n]+", value or "") if k.strip()]
+
 
 def crawl_and_export(seed_url, allowed_domain=None, limit=100, max_pages=100, jp_keywords=None):
-    start = time.time()
+    start = time.monotonic()
+    deadline = start + current_app.config["CRAWL_TIME_BUDGET"]
+    stats = {"total": 0, "requests": 0, "failed_requests": 0, "by_domain": {}, "partial": False}
+    _stats.set(stats)
+    seed_url = canonical_url(seed_url)
+    validate_public_url(seed_url, current_app.config["ALLOW_LOOPBACK"])
+    seed_host = urlparse(seed_url).hostname
+    allowed_domain = (allowed_domain or seed_host).lower().removeprefix("www.")
+    if "://" in allowed_domain:
+        allowed_domain = urlparse(allowed_domain).hostname or ""
+    keywords = parse_keywords(jp_keywords)
     visited = set()
-    queue = [seed_url]
-    rows = []
+    extracted = set()
+    queue = deque([seed_url])
+    rows = {}
 
-    filename = f"companies_{time.strftime('%Y%m%d_%H%M%S')}.csv"
-    csv_path = os.path.join(os.getcwd(), filename)
-    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+    def fetch(url):
+        if time.monotonic() >= deadline or stats["requests"] >= max_pages:
+            stats["partial"] = True
+            return None
+        return _fetch(url, deadline, stats)
 
-    keywords = []
-    if isinstance(jp_keywords, list):
-        keywords = [k.strip() for k in jp_keywords if k.strip()]
-    elif isinstance(jp_keywords, str):
-        keywords = [k.strip() for k in re.split(r"[,\\n]", jp_keywords) if k.strip()]
+    def save_candidate(url, html=None, source=None):
+        if url in extracted or len(rows) >= limit:
+            return
+        extracted.add(url)
+        html = html or fetch(url)
+        if not html:
+            return
+        soup = BeautifulSoup(html, "html.parser")
+        text = soup.get_text(" ", strip=True)
+        info = {"company_name": _company_name(soup), "homepage_url": url,
+                "contact_url": _contact_url(soup, url), "email": _email(text),
+                "phone": _phone(text), "address": _address(soup, text), "source_url": source or url}
+        if keywords and not any(k.casefold() in text.casefold() for k in keywords):
+            return
+        # mailto addresses may not be visible in page text.
+        mailto = soup.select_one('a[href^="mailto:"]')
+        if mailto and not info["email"]:
+            info["email"] = mailto["href"][7:].split("?")[0]
+        if not info["company_name"]:
+            return
+        record = upsert_company(info)  # Errors propagate: never report a failed save as success.
+        if record:
+            rows[record["key"]] = info
+            stats["total"] = len(rows)
 
-    seed_host = urlparse(seed_url).netloc.replace("www.", "").lower()
-
-    while queue and len(rows) < limit and len(visited) < max_pages:
-        url = queue.pop(0)
-        url = _normalize_url(url)
+    while queue and len(rows) < limit:
+        if time.monotonic() >= deadline or stats["requests"] >= max_pages:
+            stats["partial"] = True
+            break
+        url = queue.popleft()
         if url in visited:
             continue
         visited.add(url)
-
-        html = _fetch(url)
+        html = fetch(url)
         if not html:
             continue
-
         soup = BeautifulSoup(html, "html.parser")
-        text = soup.get_text(" ", strip=True)
-
-        homepage_links = _extract_homepage_links(soup, url, allowed_domain, seed_host)
-
-        for hp in homepage_links:
-            info = _extract_company_info(hp)
-            if not info:
+        candidates = []
+        internal = []
+        for a in soup.find_all("a", href=True):
+            try:
+                target = canonical_url(urljoin(url, a["href"]))
+            except ValueError:
                 continue
-
-            if keywords:
-                combined = " ".join([
-                    info.get("company_name", ""),
-                    info.get("address", ""),
-                    info.get("homepage_url", "")
-                ])
-                if not any(k in combined for k in keywords):
-                    continue
-
-            rows.append(info)
-
-            site = info.get("homepage_url") or info.get("source_url")
-            if site:
-                try:
-                    exists = Company.query.filter_by(company_site=site).first()
-                    if not exists:
-                        db.session.add(Company(
-                            company_name=info.get("company_name") or "",
-                            company_site=site,
-                            inquiry_url=info.get("contact_url") or "",
-                            email=info.get("email") or "",
-                            phone=info.get("phone") or "",
-                        ))
-                        db.session.commit()
-                        print(f"Saved to DB: {site}")
-                    else:
-                        print(f"Already Exists: {site}")
-
-                except Exception as e:
-                    db.session.rollback()
-                    print(f"DB Error for {site}: {e}")
-
+            host = urlparse(target).hostname.lower().removeprefix("www.")
+            label = a.get_text(" ", strip=True)
+            if host == allowed_domain or host.endswith("." + allowed_domain):
+                if target not in visited:
+                    internal.append(target)
+                if re.search(r"株式会社|有限会社|合同会社", label) or "c-companies-profile-list-member__name" in a.get("class", []):
+                    candidates.append((target, None))
+            elif host not in {"facebook.com", "instagram.com", "x.com", "twitter.com", "youtube.com", "line.me", "google.com"}:
+                candidates.append((target, None))
+        # A company's own URL is also a valid seed; do not require an external link.
+        title = _company_name(soup)
+        if url == seed_url and not candidates and re.search(r"株式会社|有限会社|合同会社", title):
+            candidates.append((url, html))
+        for target, cached in dict(candidates).items():
+            if time.monotonic() >= deadline or (not cached and stats["requests"] >= max_pages):
+                stats["partial"] = True
+                break
+            save_candidate(target, cached, url)
             if len(rows) >= limit:
                 break
+        queue.extend(t for t in dict.fromkeys(internal) if t not in visited)
 
-        for a in soup.find_all("a", href=True):
-            next_url = urljoin(url, a["href"])
-            next_url = _normalize_url(next_url)
-            if next_url not in visited and _allowed(next_url, seed_url, allowed_domain):
-                queue.append(next_url)
-
-    dedup = {}
-    for r in rows:
-        key = r["homepage_url"] or r["source_url"]
-        if key and key not in dedup:
-            dedup[key] = r
-    final_rows = list(dedup.values())
-
+    fd, csv_path = tempfile.mkstemp(prefix="companies_", suffix=".csv")
     headers = ["company_name", "homepage_url", "contact_url", "email", "phone", "address", "source_url"]
-    with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.writer(f)
-        w.writerow(headers)
-        for r in final_rows:
-            w.writerow([
-                r["company_name"],
-                r["homepage_url"],
-                r["contact_url"],
-                r["email"],
-                r["phone"],
-                r["address"],
-                r["source_url"],
-            ])
-
-    _stats["total"] = len(final_rows)
-    _stats["last_file"] = csv_path
-    _stats["duration_seconds"] = round(time.time() - start, 2)
-
+    with os.fdopen(fd, "w", newline="", encoding="utf-8-sig") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(headers)
+        for row in rows.values():
+            writer.writerow([_csv_value(row.get(key, "")) for key in headers])
+    stats["duration_seconds"] = round(time.monotonic() - start, 2)
     return csv_path
 
-def _extract_homepage_links(soup, base_url, allowed_domain, seed_host):
-    links = []
-    for a in soup.find_all("a", href=True):
-        href = urljoin(base_url, a["href"])
-        host = urlparse(href).netloc.replace("www.", "").lower()
 
-        if allowed_domain:
-            if allowed_domain.replace("www.", "").lower() not in host:
-                continue
-        else:
-            if host == seed_host:
-                continue
+def _csv_value(value):
+    value = str(value)
+    return "'" + value if value.startswith(("=", "+", "-", "@", "\t", "\r")) else value
 
-        if ".co.jp" in host or host.endswith(".jp") or host.endswith(".com"):
-            links.append(_normalize_url(href))
 
-    return list(set(links))
-
-def _extract_company_info(homepage_url):
-    html = _fetch(homepage_url)
-    if not html:
-        return None
-
-    soup = BeautifulSoup(html, "html.parser")
-    text = soup.get_text(" ", strip=True)
-
-    return {
-        "company_name": _company_name(soup),
-        "homepage_url": homepage_url,
-        "contact_url": _contact_url(soup, homepage_url),
-        "email": _email(text),
-        "phone": _phone(text),
-        "address": _address(soup, text),
-        "source_url": homepage_url,
-    }
-
-def _fetch(url):
-    try:
-        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
-        if r.status_code == 200:
-            r.encoding = r.apparent_encoding or r.encoding
-            return r.text
-    except:
-        return None
+def _fetch(url, deadline, stats):
+    # Inspect every redirect, including server-side destinations.
+    for _ in range(6):
+        if time.monotonic() >= deadline:
+            return None
+        try:
+            validate_public_url(url, current_app.config["ALLOW_LOOPBACK"])
+            host = urlparse(url).hostname
+            stats["requests"] += 1
+            stats["by_domain"][host] = stats["by_domain"].get(host, 0) + 1
+            with requests.get(url, headers={"User-Agent": "BuildSalesContactTool/1.0"}, timeout=min(10, max(.1, deadline-time.monotonic())), allow_redirects=False, stream=True) as response:
+                if response.is_redirect:
+                    url = urljoin(url, response.headers["Location"])
+                    continue
+                response.raise_for_status()
+                if "html" not in response.headers.get("Content-Type", "text/html"):
+                    return None
+                chunks = []
+                size = 0
+                for chunk in response.iter_content(65536):
+                    size += len(chunk)
+                    if size > 3_000_000 or time.monotonic() >= deadline:
+                        return None
+                    chunks.append(chunk)
+                response._content = b"".join(chunks)
+                response.encoding = response.apparent_encoding or "utf-8"
+                return response.text
+        except (requests.RequestException, ValueError):
+            stats["failed_requests"] += 1
+            return None
     return None
 
-def _normalize_url(u):
-    if not u:
-        return u
-    u = u.split("#")[0]
-    if u.endswith("/"):
-        u = u[:-1]
-    return u
-
-def _allowed(next_url, seed_url, allowed_domain):
-    host = urlparse(next_url).netloc.replace("www.", "").lower()
-
-    if allowed_domain:
-        return allowed_domain.replace("www.", "").lower() in host
-
-    seed_host = urlparse(seed_url).netloc.replace("www.", "").lower()
-    return seed_host in host
 
 def _company_name(soup):
     for h in soup.find_all(["h1", "h2"]):
@@ -232,4 +214,4 @@ def _address(soup, text):
     return ""
 
 def get_stats():
-    return _stats
+    return dict(_stats.get() or {})

@@ -1,0 +1,26 @@
+<dialog id="delivery-dialog" aria-labelledby="delivery-title">
+  <h2 id="delivery-title">営業メールの送信設定</h2>
+  <p>選択した企業のお問い合わせフォームへ送信します。送信内容と対象企業を確認してください。</p>
+  <p>本文の {company_name} は送信先の企業名に置き換わります。</p>
+  <form id="delivery-form">
+    <div class="delivery-fields">
+      <label>送信者名<input name="name" required maxlength="100"></label>
+      <label>会社名<input name="company" required maxlength="200"></label>
+      <label>返信先メールアドレス<input type="email" name="email" required maxlength="255"></label>
+      <label>電話番号<input name="phone" required maxlength="50"></label>
+      <label>フリガナ（必要な場合）<input name="kana" maxlength="100"></label>
+      <label>郵便番号（必要な場合）<input name="postal_code" maxlength="20"></label>
+    </div>
+    <label>住所（必要な場合）<input name="address" maxlength="500"></label>
+    <label>件名<input name="subject" required maxlength="200"></label>
+    <label>本文<textarea name="body" rows="12" required maxlength="10000"></textarea></label>
+    <details><summary>送信対象 <span id="delivery-count">0</span> 社</summary><ul id="delivery-targets"></ul></details>
+    <p id="delivery-status" role="status"></p>
+    <div class="delivery-actions">
+      <button type="button" id="delivery-save">下書きを保存</button>
+      <button type="submit" id="delivery-send">選択した企業へ送信する</button>
+      <button type="button" id="delivery-stop" hidden>この企業の処理後に停止</button>
+      <button type="button" id="delivery-close">閉じる</button>
+    </div>
+  </form>
+</dialog>

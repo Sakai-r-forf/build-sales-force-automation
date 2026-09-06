@@ -1,0 +1,20 @@
+.delivery-toolbar {display:flex;align-items:center;gap:16px;margin:12px 0;font-size:13px;}
+.delivery-toolbar button,.delivery-actions button {border:0;border-radius:8px;background:#d49218;color:white;padding:10px 16px;cursor:pointer;font:inherit;}
+.delivery-toolbar label {display:flex;gap:6px;align-items:center;}
+.delivery-select {margin-right:6px;}
+#delivery-dialog {margin:auto;overflow:auto;box-sizing:border-box;width:min(820px,92vw);max-height:88vh;border:1px solid #1e8697;border-radius:10px;background:#f7f7f7;color:#1d1d1d;padding:28px;}
+#delivery-dialog::backdrop {background:rgba(0,0,0,.35);}
+#delivery-dialog h2 {margin:0 0 12px;font-size:22px;color:#1e8697;}
+#delivery-dialog p {font-size:14px;line-height:1.7;}
+#delivery-form {display:grid;gap:14px;}
+#delivery-form label {display:grid;gap:6px;font-size:14px;}
+#delivery-form input,#delivery-form textarea {box-sizing:border-box;width:100%;border:1px solid rgba(30,134,151,.7);border-radius:8px;background:white;padding:10px;font:inherit;}
+.delivery-fields {display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.delivery-actions {display:flex;gap:10px;flex-wrap:wrap;}
+#delivery-close,#delivery-stop {background:#6b7b86;}
+#delivery-status {white-space:pre-line;overflow-wrap:anywhere;}
+#delivery-dialog button:disabled {opacity:.55;cursor:default;}
+#delivery-dialog [hidden] {display:none;}
+@media(max-width:600px){.delivery-fields{grid-template-columns:1fr;}}
+
+.mailStatus span {display:inline-block;white-space:nowrap;}
