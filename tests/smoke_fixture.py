@@ -12,6 +12,11 @@ def check(token):
     if not secrets.compare_digest(token,TOKEN):abort(404)
 
 
+@app.get('/robots.txt')
+def robots():
+    return 'User-agent: *\nAllow: /', 200, {'Content-Type': 'text/plain'}
+
+
 @app.get('/<token>/directory')
 def directory(token):
     check(token)

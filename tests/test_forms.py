@@ -16,7 +16,8 @@ def server():
         def log_message(self,*args):pass
         def do_GET(self):
             self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8');self.end_headers()
-            if self.path=='/directory':body='<a href="/company">株式会社テスト建設</a>'
+            if self.path=='/robots.txt':body='User-agent: *\nAllow: /'
+            elif self.path=='/directory':body='<a href="/company">株式会社テスト建設</a>'
             elif self.path=='/company':body='<h1>株式会社テスト建設</h1><p>床工事・東京都</p><a href="/form">お問い合わせ</a><a href="mailto:test@example.com">メール</a>'
             elif self.path=='/captcha':body='<div class="g-recaptcha" data-sitekey="test"></div>'+FORM
             elif self.path=='/missing':body=FORM.replace('<button','<input name="unknown" required><button')

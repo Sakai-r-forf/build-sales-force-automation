@@ -7,9 +7,9 @@ from collections import deque
 from contextvars import ContextVar
 from urllib.parse import urlparse, urljoin
 
-import requests
 from bs4 import BeautifulSoup
 from flask import current_app
+from services.crawl_policy import PoliteFetcher
 from services.network import validate_public_url
 from services.store import canonical_url, upsert_company
 
@@ -22,7 +22,7 @@ def parse_keywords(value):
     return [k.strip() for k in re.split(r"[,、\r\n]+", value or "") if k.strip()]
 
 
-def crawl_and_export(seed_url, allowed_domain=None, limit=100, max_pages=100, jp_keywords=None):
+def crawl_and_export(seed_url, allowed_domain=None, limit=100, max_pages=30, jp_keywords=None):
     start = time.monotonic()
     deadline = start + current_app.config["CRAWL_TIME_BUDGET"]
     stats = {"total": 0, "requests": 0, "failed_requests": 0, "by_domain": {}, "partial": False}
@@ -39,11 +39,8 @@ def crawl_and_export(seed_url, allowed_domain=None, limit=100, max_pages=100, jp
     queue = deque([seed_url])
     rows = {}
 
-    def fetch(url):
-        if time.monotonic() >= deadline or stats["requests"] >= max_pages:
-            stats["partial"] = True
-            return None
-        return _fetch(url, deadline, stats)
+    fetcher = PoliteFetcher(deadline, max_pages, stats)
+    fetch = fetcher.fetch
 
     def save_candidate(url, html=None, source=None):
         if url in extracted or len(rows) >= limit:
@@ -125,39 +122,6 @@ def crawl_and_export(seed_url, allowed_domain=None, limit=100, max_pages=100, jp
 def _csv_value(value):
     value = str(value)
     return "'" + value if value.startswith(("=", "+", "-", "@", "\t", "\r")) else value
-
-
-def _fetch(url, deadline, stats):
-    # Inspect every redirect, including server-side destinations.
-    for _ in range(6):
-        if time.monotonic() >= deadline:
-            return None
-        try:
-            validate_public_url(url, current_app.config["ALLOW_LOOPBACK"])
-            host = urlparse(url).hostname
-            stats["requests"] += 1
-            stats["by_domain"][host] = stats["by_domain"].get(host, 0) + 1
-            with requests.get(url, headers={"User-Agent": "BuildSalesContactTool/1.0"}, timeout=min(10, max(.1, deadline-time.monotonic())), allow_redirects=False, stream=True) as response:
-                if response.is_redirect:
-                    url = urljoin(url, response.headers["Location"])
-                    continue
-                response.raise_for_status()
-                if "html" not in response.headers.get("Content-Type", "text/html"):
-                    return None
-                chunks = []
-                size = 0
-                for chunk in response.iter_content(65536):
-                    size += len(chunk)
-                    if size > 3_000_000 or time.monotonic() >= deadline:
-                        return None
-                    chunks.append(chunk)
-                response._content = b"".join(chunks)
-                response.encoding = response.apparent_encoding or "utf-8"
-                return response.text
-        except (requests.RequestException, ValueError):
-            stats["failed_requests"] += 1
-            return None
-    return None
 
 
 def _company_name(soup):

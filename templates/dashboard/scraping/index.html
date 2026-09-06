@@ -5,6 +5,7 @@
   rel="stylesheet"
   href="{{ url_for('static', filename='css/dashboard/scraping/index.css') }}"
 />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/scraping/sources.css') }}">
 {% endblock %} {% block content %}
 
 <div class="scraping-container">
@@ -12,12 +13,24 @@
     <div class="scraping-content">
       <form id="crawl-form" method="POST" action="{{ url_for('scraping.crawl') }}">
 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <label>企業掲載サイトのURL</label>
+        <label for="saved-source">登録済みスクレイピング先</label>
+        <select id="saved-source"><option value="">URLを選択してください</option></select>
+        <label for="source-name">スクレイピング先の登録名</label>
+        <input id="source-name" maxlength="100" placeholder="例：建設会社一覧・会員名簿" />
+        <label for="seed-url">企業掲載サイトのURL</label>
         <input
           required
           name="seed_url"
+          id="seed-url"
+          type="url"
+          maxlength="2048"
           placeholder="https://example.com/member"
         />
+        <div class="source-actions">
+          <button id="source-save" type="button">このURLを登録</button>
+          <button id="source-delete" type="button" disabled>登録を削除</button>
+        </div>
+        <p id="source-status" class="faq-link" role="status" aria-live="polite">登録したURLは次回も選択できます。登録だけでは取得を開始しません。</p>
         <p class="faq-link">
           企業一覧が掲載されているサイトのURLを入力してください<a
             href="{{ url_for('faq.index') }}"
@@ -60,13 +73,13 @@
               name="max_pages"
               type="number"
               min="1"
-              max="2000"
-              value="100"
-              placeholder="既定値：100"
+              max="200"
+              value="30"
+              placeholder="既定値：30"
             />
             <!-- TODO FAQリンク挿入 -->
             <p class="faq-link">
-              サーバー負荷軽減のための制限数です</br>
+              通信回数の上限です（robots.txt・転送先へのアクセスを含みます）</br>
               <a
                 href="{{ url_for('faq.index') }}"
                 >（詳細はこちら）</a
@@ -90,13 +103,14 @@
         </p>
 
         <button type="submit">CSVを生成</button>
-        <p class="hint" id="crawl-status" role="status">※ 取得した企業情報は保存されます。CSV生成の目安は5分前後です</p>
+        <p class="hint" id="crawl-status" role="status">※ 同じサイトへのアクセスは最低5秒間隔です。robots.txtの指示を尊重し、最大約4分で取得できた分を保存します。</p>
       </form>
     </div>
   </div>
 </div>
 
 <script src="{{ url_for('static', filename='js/scraping.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/sources.js') }}" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const textarea = document.getElementById("jp_keywords");
