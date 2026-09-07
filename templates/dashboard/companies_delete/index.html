@@ -4,12 +4,38 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/companies_delete/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/companies_delete/ng.css') }}">
 {% endblock %}
 
 {% block content %}
 
 <div class="companies-delete-page">
     <h2 class="delete-title">企業データ削除</h2>
+    <section class="ng-panel" aria-labelledby="ng-title">
+        <h3 id="ng-title">NG企業一覧（送信禁止） <span>{{ ng_companies|length }}社</span></h3>
+        <p>以下の企業は取得・自動送信の対象から除外されます。社名の空白・中点・株式会社の略記などの表記違いも照合します。</p>
+        <table class="delete-table" id="ng-table">
+            <thead><tr><th>NG企業名</th><th>送信禁止にするサイト</th><th>状態</th></tr></thead>
+            <tbody>
+            {% for ng in ng_companies %}
+            <tr><td>{{ ng.name }}</td><td>{{ ng.domains|join('、') if ng.domains else '社名で判定' }}</td><td>送信禁止</td></tr>
+            {% else %}<tr><td colspan="3">NG企業の登録はありません。</td></tr>{% endfor %}
+            </tbody>
+        </table>
+        <details id="ng-add-details">
+            <summary>NG企業を追加する</summary>
+            <form method="POST" action="{{ url_for('companies_delete.ng_add') }}" id="ng-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <label>NG企業名<input name="name" required maxlength="200" placeholder="例：株式会社〇〇"></label>
+                <label>会社公式サイトのURL（任意）<input name="website" type="url" placeholder="https://example.com"></label>
+                <p>掲載サイト・検索サイトのURLではなく、対象企業の公式サイトを入力してください。同じドメインのページ全体が送信禁止になります。</p>
+                <button type="submit">NG企業として登録</button>
+            </form>
+        </details>
+        <p>登録済み社名を含む企業名も送信を止めます。別名や別サイトがある場合は追加登録してください。解除が必要な場合は管理者にご連絡ください。</p>
+    </section>
+    <h3 class="delete-title">取得済み企業の削除</h3>
+    <p class="ng-description">下の一覧から削除すると、その企業の登録URLは再取得・自動送信の対象から除外されます。別URLや社名の表記違いも止めたい場合は、上のNG企業に登録してください。</p>
     <div class="cd-search-container">
         <div class="cd-search-box">
             <input
@@ -23,7 +49,7 @@
             </button>
         </div>
     </div>    
-    <table class="delete-table">
+    <table class="delete-table" id="active-company-table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -49,7 +75,13 @@
         {% endfor %}
         </tbody>
     </table>
-
+    <details class="ng-panel" id="excluded-history">
+        <summary>削除・除外済みの企業 {{ excluded|length }}件</summary>
+        <table class="delete-table"><thead><tr><th>企業名</th><th>登録URL</th><th>状態</th></tr></thead><tbody>
+        {% for c in excluded %}<tr><td>{{ c.company_name }}</td><td>{{ c.company_site }}</td><td>{{ 'NG企業' if c.ng_rule_id else '削除済み' }}</td></tr>
+        {% else %}<tr><td colspan="3">削除・除外済みの企業はありません。</td></tr>{% endfor %}
+        </tbody></table>
+    </details>
 </div>
 
 <div id="deleteModal" class="cd-modal">
@@ -91,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById("search-input");
-        const rows  = document.querySelectorAll(".delete-table tbody tr");
+        const rows  = document.querySelectorAll("#active-company-table tbody tr");
     
         input.addEventListener("input", () => {
             const keyword = input.value.trim().toLowerCase();

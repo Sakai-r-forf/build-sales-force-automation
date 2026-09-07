@@ -114,8 +114,14 @@ def upsert_company(info):
     parsed = urlsplit(site)
     identity = parsed.netloc.removeprefix("www.") + parsed.path + ("?" + parsed.query if parsed.query else "")
     key = hashlib.sha256(identity.encode()).hexdigest()
+    from services.ng_companies import matching_rule
     def write(state):
         existing = next((c for c in state["companies"].values() if c["key"] == key), None)
+        ng = matching_rule(state, dict(info, company_site=site))
+        if ng:
+            if existing:
+                existing.update(excluded=True, excluded_at=now(), ng_rule_id=ng['id'])
+            return None
         if existing and existing.get("excluded"):
             return None
         if existing:
@@ -140,10 +146,11 @@ def upsert_company(info):
 
 
 def companies(search="", include_excluded=False):
+    from services.ng_companies import matching_rule
     state = store().read()
     result = []
     for record in state["companies"].values():
-        if record.get("excluded") and not include_excluded:
+        if (record.get("excluded") or matching_rule(state, record)) and not include_excluded:
             continue
         if search.casefold() not in record.get("company_name", "").casefold():
             continue
@@ -154,9 +161,10 @@ def companies(search="", include_excluded=False):
 
 
 def company(company_id):
+    from services.ng_companies import matching_rule
     state = store().read()
     record = state["companies"].get(str(company_id))
-    if not record or record.get("excluded"):
+    if not record or record.get("excluded") or matching_rule(state, record):
         return None
     return dict(record, delivery=state["deliveries"].get(str(company_id), {}))
 

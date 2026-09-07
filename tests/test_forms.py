@@ -66,3 +66,24 @@ def test_real_crawl_saves_and_exports(app,server):
 def test_internal_targets_blocked(payload):
     result=submit_contact('http://169.254.169.254/',payload,lambda:None)
     assert result.status=='failed'
+
+
+def test_real_browser_blocks_ng_form_action(server,payload):
+    base,submissions=server
+    def check(url,title=''):
+        if url.endswith('/thanks'):
+            raise ValueError('NG企業のフォームのため停止')
+    marks=[]
+    result=submit_contact(base+'/form',payload,lambda:marks.append(1),allow_loopback=True,check_target=check)
+    assert result.status=='failed'
+    assert 'NG企業' in result.message
+    assert not marks and not submissions
+
+
+def test_real_browser_policy_storage_failure_does_not_send(server,payload):
+    base,submissions=server
+    def check(url,title=''):
+        raise RuntimeError('storage unavailable')
+    result=submit_contact(base+'/form',payload,lambda:None,allow_loopback=True,check_target=check)
+    assert result.status=='failed'
+    assert not submissions

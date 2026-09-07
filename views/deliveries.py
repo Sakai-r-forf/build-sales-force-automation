@@ -7,6 +7,7 @@ from urllib.parse import urlsplit
 from flask import Blueprint, current_app, jsonify, request
 from flask_login import login_required, current_user
 from services.store import store, now
+from services.ng_companies import matching_rule
 from services.playwright_submit import submit_contact
 
 deliveries_bp = Blueprint("deliveries", __name__)
@@ -54,6 +55,9 @@ def send(company_id):
     user_id = current_user.get_id()
     def claim(state):
         company = state["companies"].get(str(company_id))
+        ng = matching_rule(state, company or {})
+        if ng:
+            raise ValueError('NG企業「' + ng['name'] + '」への送信は禁止されています。')
         if not company or company.get("excluded"):
             raise ValueError("対象企業が存在しないか、送信対象から除外されています。")
         if not company.get("inquiry_url"):
@@ -86,12 +90,22 @@ def send(company_id):
         def mark(state):
             record = state["companies"].get(str(company_id), {})
             delivery = state["deliveries"].get(str(company_id), {})
-            if record.get("excluded") or delivery.get("id") != attempt_id or delivery.get("status") != "sending":
+            if not record or record.get("excluded") or matching_rule(state, record) or delivery.get("id") != attempt_id or delivery.get("status") != "sending":
                 raise ValueError("送信対象の状態が変わったため停止しました。")
             delivery["submitted_at"] = now()
         store().mutate(mark)
 
-    result = submit_contact(company["inquiry_url"], rendered, before_submit, allow_loopback=current_app.config["ALLOW_LOOPBACK"])
+    def check_target(url, title=''):
+        state = store().read()
+        record = state['companies'].get(str(company_id), {})
+        ng = matching_rule(state, record, url=url, title=title)
+        if ng:
+            raise ValueError('NG企業「' + ng['name'] + '」への送信は禁止されています。')
+        if not record or record.get('excluded'):
+            raise ValueError('送信対象から除外されたため停止しました。')
+
+    result = submit_contact(company["inquiry_url"], rendered, before_submit,
+                            allow_loopback=current_app.config["ALLOW_LOOPBACK"], check_target=check_target)
     def finish(state):
         delivery = state["deliveries"][str(company_id)]
         if delivery["id"] != attempt_id:

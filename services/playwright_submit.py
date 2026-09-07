@@ -41,29 +41,38 @@ def field_key(label, kind=""):
     return "body" if kind == "textarea" else None
 
 
-def submit_contact(url, payload, before_submit, allow_loopback=False, timeout_seconds=75):
+def submit_contact(url, payload, before_submit, allow_loopback=False, timeout_seconds=75, check_target=None):
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
     clicked = False
+    blocked = ''
     deadline = time.monotonic() + timeout_seconds
     try:
         validate_public_url(url, allow_loopback)
+        if check_target:
+            check_target(url)
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True, executable_path=os.getenv("PLAYWRIGHT_CHROMIUM_EXECUTABLE") or None, args=["--disable-dev-shm-usage"])
             try:
                 context = browser.new_context(locale="ja-JP", service_workers="block", accept_downloads=False)
                 def guard(route):
+                    nonlocal blocked
                     try:
                         validate_public_url(route.request.url, allow_loopback)
+                        if check_target and (route.request.is_navigation_request() or route.request.method not in ('GET', 'HEAD')):
+                            check_target(route.request.url)
                         if route.request.resource_type in ("image", "media", "font"):
                             route.abort()
                         else:
                             route.continue_()
-                    except ValueError:
+                    except Exception as error:
+                        blocked = str(error) if isinstance(error, ValueError) else '送信可否を確認できないため停止しました。'
                         route.abort()
                 context.route("**/*", guard)
                 page = context.new_page()
                 page.set_default_timeout(4000)
                 page.goto(url, wait_until="domcontentloaded", timeout=20000)
+                if check_target:
+                    check_target(page.url, page.title() + "\n" + "\n".join(page.locator("h1").all_inner_texts()))
                 if page.locator(CAPTCHA).count():
                     return Result("manual_required", "CAPTCHAがあるため手動送信が必要です。")
                 text = page.locator("body").inner_text()
@@ -130,6 +139,12 @@ def submit_contact(url, payload, before_submit, allow_loopback=False, timeout_se
                             break
                     if submit is None:
                         return Result("unknown" if clicked else "manual_required", "送信ボタンを確認できません。送信先で結果を確認してください。")
+                    if check_target:
+                        check_target(page.url, page.title() + "\n" + "\n".join(page.locator("h1").all_inner_texts()))
+                        for target_form in page.locator('form').all():
+                            action = target_form.get_attribute('action')
+                            if action:
+                                check_target(urljoin(page.url, action))
                     before_submit()  # Durable claim and exclusion recheck before each click.
                     clicked = True
                     submit.click(timeout=10000)
@@ -157,5 +172,7 @@ def submit_contact(url, payload, before_submit, allow_loopback=False, timeout_se
     except ValueError as error:
         return Result("unknown" if clicked else "failed", str(error))
     except Exception:
+        if blocked:
+            return Result("unknown" if clicked else "failed", blocked)
         logging.getLogger(__name__).exception("Contact form operation failed; submitted=%s", clicked)
         return Result("unknown" if clicked else "failed", "送信結果を確認できません。" if clicked else "フォームへの接続またはブラウザー処理に失敗しました。")

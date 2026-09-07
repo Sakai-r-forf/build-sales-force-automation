@@ -35,7 +35,7 @@ def crawl():
     stats = get_stats()
     if not stats["total"]:
         os.unlink(csv_path)
-        return jsonify(error="該当企業を取得できませんでした。URL・キーワード・対象サイトへの接続可否を確認してください。削除済み企業は再取得されません。", stats=stats), 422
+        return jsonify(error="該当企業を取得できませんでした。URL・キーワード・対象サイトへの接続可否を確認してください。NG企業・削除済み企業は取得されません。", stats=stats), 422
     response = send_file(csv_path, as_attachment=True, download_name=os.path.basename(csv_path))
     response.headers["X-Saved-Count"] = str(stats["total"])
     response.headers["X-Crawl-Partial"] = str(stats["partial"]).lower()
