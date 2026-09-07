@@ -51,6 +51,7 @@ def send(company_id):
         data = validate_payload(request.get_json(silent=True))
     except ValueError as error:
         return jsonify(error=str(error)), 400
+    state_store = store()  # Playwright callbacks run outside Flask context-local state.
     attempt_id = uuid.uuid4().hex
     user_id = current_user.get_id()
     def claim(state):
@@ -96,7 +97,7 @@ def send(company_id):
         store().mutate(mark)
 
     def check_target(url, title=''):
-        state = store().read()
+        state = state_store.read()
         record = state['companies'].get(str(company_id), {})
         ng = matching_rule(state, record, url=url, title=title)
         if ng:

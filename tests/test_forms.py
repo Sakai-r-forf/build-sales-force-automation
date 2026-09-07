@@ -87,3 +87,16 @@ def test_real_browser_policy_storage_failure_does_not_send(server,payload):
     result=submit_contact(base+'/form',payload,lambda:None,allow_loopback=True,check_target=check)
     assert result.status=='failed'
     assert not submissions
+
+
+def test_app_delivery_with_real_browser_and_ng_callback(app,client,server,payload):
+    from services.store import upsert_company, store
+    from services.ng_companies import register_ng
+    base,submissions=server
+    with app.app_context():
+        register_ng('株式会社送信禁止の別企業')
+        row=upsert_company({'company_name':'株式会社テスト建設','homepage_url':base+'/company','contact_url':base+'/form'})
+    r=client.post(f"/deliveries/{row['id']}/send",json=payload,headers={'X-CSRF-Token':'test-csrf'})
+    assert r.status_code==200 and r.json['status']=='sent', r.json
+    assert len(submissions)==1
+    with app.app_context():assert store().read()['deliveries'][str(row['id'])]['status']=='sent'
